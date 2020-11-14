@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+
+  ##### auth
+  auth:
+    image: grpc/auth-service:latest
+    container_name: auth
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  ##### envoy-api
+  envoy-api-dev:
+    image: envoyproxy/envoy-alpine:v1.12.3
+    container_name: envoy-api-grpc
+    working_dir: /home/envoy
+    command: /usr/local/bin/envoy -c /home/envoy/envoy.json
+    ports:
+      - 443:443
+    volumes:
+      - ./envoy:/home/envoy
+
+  ##### redis
+  redis-master:
+    image: 'bitnami/redis:latest'
+    ports:
+      - '6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes

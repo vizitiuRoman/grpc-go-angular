@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "./grpc-proto/auth";
+
+message AuthReq {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthRes {
+  uint64 userId = 1;
+  string token = 2;
+  string refreshToken = 3;
+}
+
+message UpdateAuthReq {
+  string refreshToken = 1;
+}
+
+message UpdateAuthRes {
+  string token = 1;
+  string refreshToken = 2;
+}
+
+message Stub {}
+
+service AuthService {
+  rpc Auth (AuthReq) returns (AuthRes) {
+  }
+
+  rpc UpdateAuth (UpdateAuthReq) returns (UpdateAuthRes) {
+  }
+
+  rpc Logout (Stub) returns (Stub) {
+  }
+}

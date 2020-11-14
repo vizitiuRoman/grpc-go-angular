@@ -1,0 +1,10 @@
+{
+  "port": "9091",
+  "dbHost": "127.0.0.1",
+  "dbDebug": "true",
+  "dbDriver": "postgres",
+  "dbUser": "user",
+  "dbPassword": "user",
+  "dbName": "user",
+  "dbPort": "5443"
+}

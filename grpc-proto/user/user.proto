@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./grpc-proto/user";
+
+import "github.com/envoyproxy/protoc-gen-validate/validate/validate.proto";
+
+enum EStatus {
+  UNKNOWN = 0;
+  SUCCESS = 1;
+  ERROR = 2;
+}
+
+message CreateUserReq {
+  string name = 1;
+  string email = 2 [(validate.rules).string.email = true];
+  string password = 3;
+}
+
+message UpdateUserReq {
+  string name = 1;
+  string email = 2;
+}
+
+message VerifyUserReq {
+  string email = 1 [(validate.rules).string.email = true];
+  string password = 2;
+}
+
+message UserReq {
+  uint64 id = 1;
+}
+
+message UserRes {
+  uint64 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message UsersRes {
+  repeated UserRes users = 1;
+}
+
+message Stub {}
+
+service UserService {
+  rpc CreateUser (CreateUserReq) returns (UserRes) {
+  }
+
+  rpc UpdateUser (UpdateUserReq) returns (UserRes) {
+  }
+
+  rpc DeleteUser (UserReq) returns (Stub) {
+  }
+
+  rpc VerifyUser (VerifyUserReq) returns (UserRes) {
+  }
+
+  rpc GetUser (UserReq) returns (UserRes) {
+  }
+
+  rpc GetUsers (Stub) returns (UsersRes) {
+  }
+}
