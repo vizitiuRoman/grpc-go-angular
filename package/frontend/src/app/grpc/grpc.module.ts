@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { AuthServicePromiseClient } from '@grpc/grpc-proto/auth/auth_grpc_web_pb';
+import { UserServicePromiseClient } from '@grpc/grpc-proto/user/user_grpc_web_pb';
 
 const GRPC_CLIENTS = [
     AuthServicePromiseClient,
+    UserServicePromiseClient,
 ];
 
 @NgModule({

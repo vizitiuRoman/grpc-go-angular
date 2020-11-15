@@ -10,6 +10,7 @@ import (
 	pb "github.com/user-service/grpc-proto/user"
 	"github.com/user-service/pkg/controllers"
 	"github.com/user-service/pkg/models"
+	"github.com/user-service/pkg/settings"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -23,7 +24,7 @@ type Server struct {
 
 func NewServer() *Server {
 	return &Server{
-		port:      "9091",
+		port:      settings.Get().Port,
 		logger:    newLogger(),
 		interrupt: make(chan os.Signal, 1),
 		listen:    make(chan error, 1),

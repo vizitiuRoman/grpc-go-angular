@@ -1,13 +1,35 @@
 version: "3.7"
 
 services:
+  user_db:
+    image: postgres
+    container_name: user_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_HOST: localhost
+      POSTGRES_PASSWORD: user
+      POSTGRES_DATABASE: user
+    ports:
+      - 5444:5444
 
   ##### auth
   auth:
     image: grpc/auth-service:latest
     container_name: auth
+    depends_on:
+      - user
+      - redis-master
     ports:
       - "9090:9090"
+    restart: unless-stopped
+
+  ##### user
+  user:
+    image: grpc/user-service:latest
+    container_name: user
+    ports:
+      - "9091:9091"
     restart: unless-stopped
 
   ##### envoy-api

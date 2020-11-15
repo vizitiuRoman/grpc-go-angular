@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { UserServicePromiseClient } from '@grpc/grpc-proto/user/user_grpc_web_pb';
-import { CreateUserReq, UpdateUserReq, User, UserReq, UserRes } from '@grpc/grpc-proto/user/user_pb';
 
 import { Observable } from 'rxjs';
 
@@ -8,6 +6,8 @@ import { Metadata } from 'grpc-web';
 
 import { grpcUnary } from '@grpc/helpers/grpc-unary';
 import { grpcJwtMetadata } from '@grpc/helpers/grpc-metadata';
+import { UserServicePromiseClient } from '@grpc/grpc-proto/user/user_grpc_web_pb';
+import { CreateUserReq, UpdateUserReq, UserReq, UserRes } from '@grpc/grpc-proto/user/user_pb';
 
 @Injectable({
     providedIn: 'root',
@@ -45,12 +45,12 @@ export class UserGrpcService {
         return grpcUnary<UserRes.AsObject>(this.client.deleteUser(req));
     }
 
-    public getUser(data: UserReq.AsObject): Observable<User.AsObject> {
+    public getUser(data: UserReq.AsObject): Observable<UserRes.AsObject> {
         const req = new UserReq();
 
         req.setId(data.id);
 
-        return grpcUnary<User.AsObject>(this.client.getUser(req));
+        return grpcUnary<UserRes.AsObject>(this.client.getUser(req));
     }
 
 }

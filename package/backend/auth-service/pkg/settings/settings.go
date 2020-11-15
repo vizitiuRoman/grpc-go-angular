@@ -7,7 +7,7 @@ import (
 )
 
 type Settings struct {
-	Port, Secret, RedisPort, RedisHost string
+	Port, Secret, RedisPort, RedisHost, UserAddr string
 }
 
 var settings Settings

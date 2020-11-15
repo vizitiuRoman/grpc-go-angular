@@ -1,6 +1,7 @@
 {
   "port": "9090",
+  "userAddr": "user:9091",
   "secret": "rokgne",
-  "redisHost": "127.0.0.1",
+  "redisHost": "redis-master",
   "redisPort": "6379"
 }

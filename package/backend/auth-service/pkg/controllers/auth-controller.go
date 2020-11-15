@@ -5,23 +5,45 @@ import (
 	"strings"
 
 	pb "github.com/auth-service/grpc-proto/auth"
+	userpb "github.com/auth-service/grpc-proto/user"
 	"github.com/auth-service/pkg/auth"
 	. "github.com/auth-service/pkg/models"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
 type Controller struct {
-	logger *zap.SugaredLogger
+	userAddr string
+	logger   *zap.SugaredLogger
 }
 
-func NewController(logger *zap.SugaredLogger) *Controller {
-	return &Controller{logger}
+func NewController(userAddr string, logger *zap.SugaredLogger) *Controller {
+	return &Controller{userAddr, logger}
 }
 
 func (c *Controller) Auth(ctx context.Context, req *pb.AuthReq) (*pb.AuthRes, error) {
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial(c.userAddr, grpc.WithInsecure())
+	if err != nil {
+	}
+	defer conn.Close()
+
+	client := userpb.NewUserServiceClient(conn)
+
+	userReq := &userpb.CreateUserReq{Email: req.Email, Password: "qwewq", Name: "qwe"}
+
+	response, err := client.CreateUser(context.Background(), userReq)
+	if err != nil {
+		c.logger.Errorf("Error extract metadata: %v", err)
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+	c.logger.Info(response.Name)
+	c.logger.Info(response.Id)
+	c.logger.Info(response.Email)
+
 	token, err := auth.CreateToken(context.Background(), 1)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())

@@ -11,7 +11,7 @@ import (
 
 func main() {
 	settings.Init()
-	port := ":9090"
+	port := settings.Get().Port
 
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial("localhost"+port, grpc.WithInsecure())
@@ -23,7 +23,6 @@ func main() {
 	client := pb.NewAuthServiceClient(conn)
 
 	req := &pb.AuthReq{Email: "roma", Password: "qwewq"}
-
 
 	response, err := client.Auth(context.Background(), req)
 	if err != nil {
