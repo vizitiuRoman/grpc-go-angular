@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { interval, Observable, ReplaySubject, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 
-import { AuthReq, AuthRes, UpdateAuthRes } from '@grpc/grpc-proto/auth/auth_pb';
+import { AuthReq, AuthRes, RegisterReq, UpdateAuthRes } from '@grpc/grpc-proto/auth/auth_pb';
 import { AuthGrpcService } from '@grpc/services/auth/auth.service';
 import { StorageService } from '@services/storage.service';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@utils/constants';
@@ -51,6 +51,21 @@ export class AuthService {
 
     public auth(data: AuthReq.AsObject): Observable<AuthRes.AsObject> {
         return this.authGrpcService.auth(data)
+            .pipe(
+                map(
+                    (res) => {
+                        this.storageService.set(ACCESS_TOKEN, res.token);
+                        this.storageService.set(REFRESH_TOKEN, res.refreshtoken);
+                        this.loggedInSubject$.next(true);
+                        this.updateToken();
+                        return res;
+                    }
+                ),
+            );
+    }
+
+    public register(data: RegisterReq.AsObject): Observable<AuthRes.AsObject> {
+        return this.authGrpcService.register(data)
             .pipe(
                 map(
                     (res) => {

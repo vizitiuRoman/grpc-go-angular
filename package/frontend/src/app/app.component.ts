@@ -42,7 +42,8 @@ export class AppComponent {
                             message: 'Error',
                             position: 'bottom',
                             duration: 3000,
-                        });
+                        })
+                            .then((toast) => toast.present());
                         this.authService.logout();
                     }
                 );

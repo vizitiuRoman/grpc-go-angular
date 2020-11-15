@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	pb "github.com/auth-service/grpc-proto/auth"
-	"github.com/auth-service/pkg/controllers"
+	"github.com/auth-service/pkg/controller"
 	"github.com/auth-service/pkg/models"
 	"github.com/auth-service/pkg/settings"
 	"go.uber.org/zap"
@@ -47,7 +47,7 @@ func (srv *Server) StartGRPC() {
 	}
 
 	gRPCServer := grpc.NewServer()
-	pb.RegisterAuthServiceServer(gRPCServer, controllers.NewController(settings.Get().UserAddr, srv.logger))
+	pb.RegisterAuthServiceServer(gRPCServer, controller.NewController(settings.Get().UserAddr, srv.logger))
 
 	go func(listen chan error) {
 		srv.logger.Info("Service started on port: " + srv.port)

@@ -1,4 +1,4 @@
-package controllers
+package controller
 
 import (
 	"context"
@@ -33,24 +33,48 @@ func (c *Controller) Auth(ctx context.Context, req *pb.AuthReq) (*pb.AuthRes, er
 
 	client := userpb.NewUserServiceClient(conn)
 
-	userReq := &userpb.CreateUserReq{Email: req.Email, Password: "qwewq", Name: "qwe"}
+	userReq := &userpb.VerifyUserReq{Email: req.Email, Password: req.Password}
 
-	response, err := client.CreateUser(context.Background(), userReq)
+	response, err := client.VerifyUser(ctx, userReq)
 	if err != nil {
-		c.logger.Errorf("Error extract metadata: %v", err)
-		return nil, status.Errorf(codes.Internal, err.Error())
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
-	c.logger.Info(response.Name)
-	c.logger.Info(response.Id)
-	c.logger.Info(response.Email)
 
-	token, err := auth.CreateToken(context.Background(), 1)
+	token, err := auth.CreateToken(ctx, response.Id)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	return &pb.AuthRes{
-		UserId:       1,
+		UserId:       response.Id,
+		Token:        token.AToken,
+		RefreshToken: token.RToken,
+	}, nil
+}
+
+func (c *Controller) Register(ctx context.Context, req *pb.RegisterReq) (*pb.AuthRes, error) {
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial(c.userAddr, grpc.WithInsecure())
+	if err != nil {
+	}
+	defer conn.Close()
+
+	client := userpb.NewUserServiceClient(conn)
+
+	userReq := &userpb.CreateUserReq{Email: req.Email, Password: req.Password}
+
+	response, err := client.CreateUser(ctx, userReq)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
+	}
+
+	token, err := auth.CreateToken(ctx, response.Id)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
+	}
+
+	return &pb.AuthRes{
+		UserId:       response.Id,
 		Token:        token.AToken,
 		RefreshToken: token.RToken,
 	}, nil

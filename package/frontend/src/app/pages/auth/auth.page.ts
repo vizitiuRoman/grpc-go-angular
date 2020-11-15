@@ -43,7 +43,8 @@ export class AuthPage {
                             message: err.message,
                             position: 'bottom',
                             duration: 3000,
-                        });
+                        })
+                            .then((toast) => toast.present());
                     }
                 );
         }

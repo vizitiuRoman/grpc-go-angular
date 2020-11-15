@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	pb "github.com/user-service/grpc-proto/user"
-	"github.com/user-service/pkg/controllers"
+	"github.com/user-service/pkg/controller"
 	"github.com/user-service/pkg/models"
 	"github.com/user-service/pkg/settings"
 	"go.uber.org/zap"
@@ -47,7 +47,7 @@ func (srv *Server) StartGRPC() {
 	}
 
 	gRPCServer := grpc.NewServer()
-	pb.RegisterUserServiceServer(gRPCServer, controllers.NewController(srv.logger))
+	pb.RegisterUserServiceServer(gRPCServer, controller.NewController(srv.logger))
 
 	go func(listen chan error) {
 		srv.logger.Info("Service started on port: " + srv.port)

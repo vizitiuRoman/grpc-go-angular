@@ -13,14 +13,14 @@ enum EStatus {
 }
 
 message CreateUserReq {
-  string name = 1;
-  string email = 2 [(validate.rules).string.email = true];
-  string password = 3;
+  string email = 1 [(validate.rules).string.email = true];
+  string password = 2;
 }
 
 message UpdateUserReq {
-  string name = 1;
-  string email = 2;
+  string email = 1 [(validate.rules).string.email = true];
+  string password = 2;
+  uint64 id = 3;
 }
 
 message VerifyUserReq {
@@ -34,8 +34,7 @@ message UserReq {
 
 message UserRes {
   uint64 id = 1;
-  string name = 2;
-  string email = 3;
+  string email = 2;
 }
 
 message UsersRes {

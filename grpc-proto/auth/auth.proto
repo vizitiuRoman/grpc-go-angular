@@ -9,6 +9,11 @@ message AuthReq {
   string password = 2;
 }
 
+message RegisterReq {
+  string email = 1;
+  string password = 2;
+}
+
 message AuthRes {
   uint64 userId = 1;
   string token = 2;
@@ -28,6 +33,9 @@ message Stub {}
 
 service AuthService {
   rpc Auth (AuthReq) returns (AuthRes) {
+  }
+
+  rpc Register (RegisterReq) returns (AuthRes) {
   }
 
   rpc UpdateAuth (UpdateAuthReq) returns (UpdateAuthRes) {
