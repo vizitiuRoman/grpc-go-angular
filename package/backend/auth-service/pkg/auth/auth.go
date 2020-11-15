@@ -8,7 +8,7 @@ import (
 	"time"
 
 	. "github.com/auth-service/pkg/models"
-	"github.com/auth-service/pkg/settings"
+	"github.com/auth-service/pkg/config"
 	. "github.com/auth-service/pkg/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/twinj/uuid"
@@ -29,7 +29,7 @@ type (
 	}
 )
 
-var secret = settings.Get().Secret
+var secret = config.Get().Secret
 
 func prepareToken(extractedToken string) (*jwt.Token, error) {
 	token, err := jwt.Parse(extractedToken, func(token *jwt.Token) (interface{}, error) {

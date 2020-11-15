@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/auth-service/pkg/server"
-	"github.com/auth-service/pkg/settings"
+	"github.com/auth-service/pkg/config"
 )
 
 func main() {
-	settings.Init()
+	config.Init()
 	srv := server.NewServer()
 	srv.Init()
 	srv.StartGRPC()

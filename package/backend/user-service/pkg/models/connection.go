@@ -5,7 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/user-service/pkg/settings"
+	"github.com/user-service/pkg/config"
 )
 
 const schema = `
@@ -25,11 +25,11 @@ var (
 func InitDatabase() error {
 	DBSpec := fmt.Sprintf(
 		"user=%s dbname=%s password=%s port=%s host=%s sslmode=disable",
-		settings.Get().DBUser, settings.Get().DBName,
-		settings.Get().DBPassword, settings.Get().DBPort,
-		settings.Get().DBHost,
+		config.Get().DBUser, config.Get().DBName,
+		config.Get().DBPassword, config.Get().DBPort,
+		config.Get().DBHost,
 	)
-	database, err := sqlx.Connect(settings.Get().DBDriver, DBSpec)
+	database, err := sqlx.Connect(config.Get().DBDriver, DBSpec)
 	if err != nil {
 		return err
 	}

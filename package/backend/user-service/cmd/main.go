@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/user-service/pkg/config"
 	"github.com/user-service/pkg/server"
-	"github.com/user-service/pkg/settings"
 )
 
 func main() {
-	settings.Init()
+	config.Init()
 	srv := server.NewServer()
 	srv.Init()
 	srv.StartGRPC()

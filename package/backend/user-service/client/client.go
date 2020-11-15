@@ -5,7 +5,7 @@ import (
 	"log"
 
 	pb "github.com/user-service/grpc-proto/user"
-	"github.com/user-service/pkg/settings"
+	"github.com/user-service/pkg/config"
 	"google.golang.org/grpc"
 )
 

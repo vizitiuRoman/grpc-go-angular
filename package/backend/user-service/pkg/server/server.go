@@ -8,9 +8,9 @@ import (
 	"syscall"
 
 	pb "github.com/user-service/grpc-proto/user"
+	"github.com/user-service/pkg/config"
 	"github.com/user-service/pkg/controller"
 	"github.com/user-service/pkg/models"
-	"github.com/user-service/pkg/settings"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -24,8 +24,8 @@ type Server struct {
 
 func NewServer() *Server {
 	return &Server{
-		port:      settings.Get().Port,
-		logger:    newLogger(),
+		port:      config.Get().Port,
+		logger:    config.NewLogger(),
 		interrupt: make(chan os.Signal, 1),
 		listen:    make(chan error, 1),
 	}

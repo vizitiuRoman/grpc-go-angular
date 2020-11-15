@@ -1,4 +1,4 @@
-package settings
+package config
 
 import (
 	"encoding/json"
@@ -6,11 +6,11 @@ import (
 	"io/ioutil"
 )
 
-type Settings struct {
+type Config struct {
 	Port, DBHost, DBDebug, DBDriver, DBUser, DBPassword, DBName, DBPort string
 }
 
-var settings Settings
+var config Config
 var env = "dev"
 var environments = map[string]string{
 	"dev":        "./dev.yaml",
@@ -18,16 +18,16 @@ var environments = map[string]string{
 }
 
 func Init() {
-	LoadSettingsByEnv("dev")
+	LoadConfigByEnv("dev")
 }
 
-func LoadSettingsByEnv(env string) {
+func LoadConfigByEnv(env string) {
 	content, err := ioutil.ReadFile(environments[env])
 	if err != nil {
 		fmt.Println("Error while reading config file", err)
 	}
-	settings = Settings{}
-	jsonErr := json.Unmarshal(content, &settings)
+	config = Config{}
+	jsonErr := json.Unmarshal(content, &config)
 	if jsonErr != nil {
 		fmt.Println("Error while parsing config file", jsonErr)
 	}
@@ -37,9 +37,9 @@ func GetEnvironment() string {
 	return env
 }
 
-func Get() Settings {
-	if &settings == nil {
+func Get() Config {
+	if &config == nil {
 		Init()
 	}
-	return settings
+	return config
 }
