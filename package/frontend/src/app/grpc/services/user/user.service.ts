@@ -20,7 +20,6 @@ export class UserGrpcService {
     public createUser(data: CreateUserReq.AsObject): Observable<UserRes.AsObject> {
         const req = new CreateUserReq();
 
-        req.setName(data.name);
         req.setEmail(data.email);
         req.setPassword(data.password);
 
@@ -31,7 +30,6 @@ export class UserGrpcService {
         const req = new UpdateUserReq();
         const meta: Metadata = grpcJwtMetadata();
 
-        req.setName(data.name);
         req.setEmail(data.email);
 
         return grpcUnary<UserRes.AsObject>(this.client.updateUser(req, meta));

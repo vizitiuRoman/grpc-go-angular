@@ -13,6 +13,6 @@ lint:
 	@cd pkg && golangci-lint run ./...
 
 docker-build:
-	docker build -t grpc/auth-service -f ./docker/Dockerfile .
+	docker build -t grpc/auth-service --no-cache -f ./docker/Dockerfile .
 	docker tag grpc/auth-service grpc/auth-service:1.0.0
 

@@ -12,6 +12,11 @@ enum EStatus {
   ERROR = 2;
 }
 
+message User {
+  uint64 id = 1;
+  string email = 2;
+}
+
 message CreateUserReq {
   string email = 1 [(validate.rules).string.email = true];
   string password = 2;

@@ -13,6 +13,6 @@ lint:
 	@cd pkg && golangci-lint run ./...
 
 docker-build:
-	docker build -t grpc/user-service -f ./docker/Dockerfile .
+	docker build -t grpc/user-service --no-cache -f ./docker/Dockerfile .
 	docker tag grpc/user-service grpc/user-service:1.0.0
 
