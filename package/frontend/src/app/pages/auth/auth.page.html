@@ -1,0 +1,96 @@
+<ion-content>
+    <div class="sign-container gradient-1">
+
+        <div class="header">
+            <div class="title ion-text-center">
+                <img src="https://image.flaticon.com/icons/svg/145/145807.svg" alt="">
+            </div>
+        </div>
+
+        <div class="login-container">
+
+            <form class="form"
+                  [formGroup]="form" (ngSubmit)="onSubmit('login')"
+            >
+                <ion-item>
+                    <ion-label>Email</ion-label>
+                    <ion-input class="ion-text-right input" formControlName="email"
+                               type="text" name="user-email" placeholder="Email"
+                    >
+                    </ion-input>
+                    <ion-icon slot="end" name="at"></ion-icon>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label>Password</ion-label>
+                    <ion-input class="ion-text-right input" formControlName="password"
+                               type="password" name="password" placeholder="Password"
+                    >
+                    </ion-input>
+                    <ion-icon slot="end" name="lock"></ion-icon>
+                </ion-item>
+
+                <div class="ion-text-center fade-in">
+                    <ion-button class="green-button" type="submit">
+                        Submit
+                    </ion-button>
+                </div>
+
+            </form>
+
+        </div>
+
+        <div style="z-index: 10" class="sign-up-container gradient-2" [ngClass]="{'active': signupView}">
+
+            <div class="toggle-text ion-text-center" tappable (click)="toggleSignUpView()">
+
+                <span *ngIf="!signupView" [ngClass]="{'fade-in': !signupView, 'fade-out': signupView}">Sign Up</span>
+                <span *ngIf="signupView" [ngClass]="{'fade-in': signupView, 'fade-out': !signupView}">Login</span>
+                <br>
+                <ion-button *ngIf="!signupView"
+                            [ngClass]="{'fade-in': !signupView, 'fade-out': signupView}"
+                >
+                    O
+                </ion-button>
+                <ion-button *ngIf="signupView"
+                            [ngClass]="{'fade-in': signupView, 'fade-out': !signupView}"
+                >
+                    X
+                </ion-button>
+
+            </div>
+
+            <form class="form"
+                  [formGroup]="form" (ngSubmit)="onSubmit('register')"
+                  [ngClass]="{'fade-in': signupView, 'fade-out': !signupView}"
+            >
+                <ion-item>
+                    <ion-label>Email</ion-label>
+                    <ion-input class="ion-text-right input" formControlName="email"
+                               type="text" name="user-email" placeholder="Email"
+                    >
+                    </ion-input>
+                    <ion-icon slot="end" name="at"></ion-icon>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label>Password</ion-label>
+                    <ion-input class="ion-text-right input" formControlName="password"
+                               type="password" name="password" placeholder="Password"
+                    >
+                    </ion-input>
+                    <ion-icon slot="end" name="lock"></ion-icon>
+                </ion-item>
+
+                <div class="ion-text-center" [ngClass]="{'fade-in': signupView, 'fade-out': !signupView}">
+                    <ion-button class="gray-button" type="submit">
+                        Submit
+                    </ion-button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</ion-content>

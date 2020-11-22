@@ -7,9 +7,9 @@ import { jwtAuthError$ } from '@grpc/helpers/grpc-jwt';
 
 import * as protobuf from 'google-protobuf';
 
-export function grpcUnary<T>(promise): Observable<T> {
+export function grpcUnary<T>(promise: Promise<any>): Observable<T> {
     return from(promise).pipe(
-        map((response: protobuf.Message) => response.toObject()),
+        map((response: protobuf.Message) => response.toObject() as T),
         catchError((error: Status) => {
             if (error.code === StatusCode.UNAUTHENTICATED) {
                 jwtAuthError$.next();

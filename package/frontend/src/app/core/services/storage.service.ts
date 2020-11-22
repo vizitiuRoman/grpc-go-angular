@@ -9,7 +9,7 @@ export class StorageService {
     }
 
     public get<T>(key: string): T {
-        return JSON.parse(localStorage.getItem(key)) as T;
+        return JSON.parse(localStorage.getItem(key) as string) as T;
     }
 
     public clear(): void {

@@ -58,6 +58,7 @@ export class AuthService {
                         this.storageService.set(REFRESH_TOKEN, res.refreshtoken);
                         this.loggedInSubject$.next(true);
                         this.updateToken();
+                        this.router.navigateByUrl('/home');
                         return res;
                     }
                 ),
@@ -73,6 +74,7 @@ export class AuthService {
                         this.storageService.set(REFRESH_TOKEN, res.refreshtoken);
                         this.loggedInSubject$.next(true);
                         this.updateToken();
+                        this.router.navigateByUrl('/home');
                         return res;
                     }
                 ),

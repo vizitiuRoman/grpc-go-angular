@@ -17,9 +17,10 @@ import { ACCESS_TOKEN } from '@utils/constants';
     styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-
-    public user: User.AsObject;
     private ngDestroy$ = new Subject<boolean>();
+
+    public signupView!: boolean;
+    public user!: User.AsObject;
 
     constructor(
         private storageService: StorageService,
@@ -54,5 +55,8 @@ export class HomePage implements OnInit, OnDestroy {
             );
     }
 
+    toggleSignUpView(): void {
+        this.signupView = !this.signupView;
+    }
 
 }
