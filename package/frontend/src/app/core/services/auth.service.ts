@@ -24,6 +24,13 @@ export class AuthService {
     ) {
     }
 
+    private setAuthData(res: UpdateAuthRes.AsObject): void {
+        this.storageService.set(ACCESS_TOKEN, res.token);
+        this.storageService.set(REFRESH_TOKEN, res.refreshtoken);
+        this.loggedInSubject$.next(true);
+        this.updateToken();
+    }
+
     private updateToken(): void {
         const aToken = this.storageService.get<string>(ACCESS_TOKEN).split('.')[1];
         const rToken = this.storageService.get<string>(REFRESH_TOKEN);
@@ -54,10 +61,7 @@ export class AuthService {
             .pipe(
                 map(
                     (res) => {
-                        this.storageService.set(ACCESS_TOKEN, res.token);
-                        this.storageService.set(REFRESH_TOKEN, res.refreshtoken);
-                        this.loggedInSubject$.next(true);
-                        this.updateToken();
+                        this.setAuthData(res);
                         this.router.navigateByUrl('/home');
                         return res;
                     }
@@ -70,10 +74,7 @@ export class AuthService {
             .pipe(
                 map(
                     (res) => {
-                        this.storageService.set(ACCESS_TOKEN, res.token);
-                        this.storageService.set(REFRESH_TOKEN, res.refreshtoken);
-                        this.loggedInSubject$.next(true);
-                        this.updateToken();
+                        this.setAuthData(res);
                         this.router.navigateByUrl('/home');
                         return res;
                     }
@@ -89,10 +90,7 @@ export class AuthService {
                 .pipe(
                     map(
                         (res) => {
-                            this.storageService.set(ACCESS_TOKEN, res.token);
-                            this.storageService.set(REFRESH_TOKEN, res.refreshtoken);
-                            this.loggedInSubject$.next(true);
-                            this.updateToken();
+                            this.setAuthData(res);
                             return res;
                         },
                     )
