@@ -21,13 +21,14 @@ func NewController(logger *zap.SugaredLogger) *Controller {
 func (c *Controller) CreateUser(ctx context.Context, req *pb.CreateUserReq) (*pb.UserRes, error) {
 	err := req.Validate()
 	if err != nil {
-		c.logger.Errorf("Error validate user: %v", err)
+		c.logger.Errorf("CreateUser error validate user: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	user := &User{Email: req.Email, Password: req.Password}
 	createdUser, err := user.Create()
 	if err != nil {
+		c.logger.Errorf("CreateUser error create user: %v", err)
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
@@ -37,12 +38,14 @@ func (c *Controller) CreateUser(ctx context.Context, req *pb.CreateUserReq) (*pb
 func (c *Controller) UpdateUser(ctx context.Context, req *pb.UpdateUserReq) (*pb.UserRes, error) {
 	err := req.Validate()
 	if err != nil {
+		c.logger.Errorf("UpdateUser error validate user: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	user := User{ID: req.Id, Email: req.Email}
 	err = user.Update()
 	if err != nil {
+		c.logger.Errorf("UpdateUser error update user: %v", err)
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
@@ -53,6 +56,7 @@ func (c *Controller) DeleteUser(ctx context.Context, req *pb.UserReq) (*pb.Stub,
 	var user User
 	err := user.DeleteByID(req.Id)
 	if err != nil {
+		c.logger.Errorf("DeleteUser error delete by id: %v", err)
 		return nil, status.Errorf(codes.NotFound, err.Error())
 	}
 	return &pb.Stub{}, nil
@@ -61,18 +65,20 @@ func (c *Controller) DeleteUser(ctx context.Context, req *pb.UserReq) (*pb.Stub,
 func (c *Controller) VerifyUser(ctx context.Context, req *pb.VerifyUserReq) (*pb.UserRes, error) {
 	err := req.Validate()
 	if err != nil {
-		c.logger.Errorf("Error validate user: %v", err)
+		c.logger.Errorf("VerifyUser error validate user: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	var user User
 	foundUser, err := user.FindByEmail(req.Email)
 	if err != nil {
+		c.logger.Errorf("VerifyUser error find by email user: %v", err)
 		return nil, status.Errorf(codes.NotFound, err.Error())
 	}
 
 	err = VerifyPassword(foundUser.Password, req.Password)
 	if err != nil {
+		c.logger.Errorf("VerifyUser error verify password: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid email or password")
 	}
 
@@ -83,6 +89,7 @@ func (c *Controller) GetUser(ctx context.Context, req *pb.UserReq) (*pb.UserRes,
 	var user User
 	foundUser, err := user.FindByID(req.Id)
 	if err != nil {
+		c.logger.Errorf("GetUser error find user by id: %v", err)
 		return nil, status.Errorf(codes.NotFound, "Not found user")
 	}
 	return &pb.UserRes{Id: foundUser.ID, Email: foundUser.Email}, nil
