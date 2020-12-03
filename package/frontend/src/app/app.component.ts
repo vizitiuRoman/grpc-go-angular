@@ -12,7 +12,7 @@ import { AuthService } from '@services/auth.service';
 @Component({
     selector: 'app-root',
     templateUrl: 'app.component.html',
-    styleUrls: ['app.component.scss']
+    styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
     public isAuth$: Observable<boolean> = this.authService.isLoggedIn();
@@ -22,7 +22,7 @@ export class AppComponent {
         private splashScreen: SplashScreen,
         private statusBar: StatusBar,
         private authService: AuthService,
-        private toastCtrl: ToastController,
+        private toastCtrl: ToastController
     ) {
         this.initializeApp();
     }
@@ -35,26 +35,23 @@ export class AppComponent {
             const updateAuth = this.authService.updateAuth();
             if (updateAuth instanceof Observable) {
                 updateAuth.subscribe(
-                    () => {
-                    },
+                    () => {},
                     (err) => {
-                        this.toastCtrl.create({
-                            message: 'Error',
-                            position: 'bottom',
-                            duration: 3000,
-                        })
+                        this.toastCtrl
+                            .create({
+                                message: 'Error',
+                                position: 'bottom',
+                                duration: 3000,
+                            })
                             .then((toast) => toast.present());
                         this.authService.logout();
                     }
                 );
             }
 
-            jwtAuthError$.asObservable()
-                .subscribe(
-                    () => {
-                        this.logout();
-                    }
-                );
+            jwtAuthError$.asObservable().subscribe(() => {
+                this.logout();
+            });
         });
     }
 

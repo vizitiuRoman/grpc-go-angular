@@ -25,9 +25,8 @@ export class HomePage implements OnInit, OnDestroy {
     constructor(
         private storageService: StorageService,
         private userGrpcService: UserGrpcService,
-        private toastCtrl: ToastController,
-    ) {
-    }
+        private toastCtrl: ToastController
+    ) {}
 
     ngOnDestroy(): void {
         this.ngDestroy$.next(true);
@@ -38,18 +37,20 @@ export class HomePage implements OnInit, OnDestroy {
         const id = getUserIdFromJWT(
             this.storageService.get<string>(ACCESS_TOKEN)
         );
-        this.userGrpcService.getUser({ id })
+        this.userGrpcService
+            .getUser({ id })
             .pipe(takeUntil(this.ngDestroy$))
             .subscribe(
                 (user) => {
                     this.user = user;
                 },
                 (err) => {
-                    this.toastCtrl.create({
-                        message: err.message,
-                        position: 'bottom',
-                        duration: 3000,
-                    })
+                    this.toastCtrl
+                        .create({
+                            message: err.message,
+                            position: 'bottom',
+                            duration: 3000,
+                        })
                         .then((toast) => toast.present());
                 }
             );
@@ -58,5 +59,4 @@ export class HomePage implements OnInit, OnDestroy {
     toggleSignUpView(): void {
         this.signupView = !this.signupView;
     }
-
 }

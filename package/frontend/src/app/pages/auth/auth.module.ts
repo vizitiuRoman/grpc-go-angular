@@ -16,7 +16,6 @@ import { AuthPage } from './auth.page';
         LoginPageRoutingModule,
         ReactiveFormsModule,
     ],
-    declarations: [AuthPage]
+    declarations: [AuthPage],
 })
-export class LoginPageModule {
-}
+export class LoginPageModule {}

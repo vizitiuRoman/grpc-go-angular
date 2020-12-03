@@ -1,11 +1,12 @@
 import { browser, by, element } from 'protractor';
+import { promise as wdpromise, promise } from 'selenium-webdriver';
 
 export class AppPage {
-  navigateTo() {
-    return browser.get('/');
-  }
+    navigateTo(): wdpromise.Promise<{}> {
+        return browser.get('/');
+    }
 
-  getPageTitle() {
-    return element(by.css('ion-title')).getText();
-  }
+    getPageTitle(): promise.Promise<string> {
+        return element(by.css('ion-title')).getText();
+    }
 }

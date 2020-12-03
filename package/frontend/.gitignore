@@ -25,6 +25,7 @@ npm-debug.log*
 /.vscode
 /coverage
 /src/app/grpc/grpc-proto
+/coverage-ts
 /dist
 /node_modules
 /platforms

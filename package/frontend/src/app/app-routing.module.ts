@@ -7,12 +7,14 @@ import { NoAuthGuard } from './core/guards/no-auth.guard';
 const routes: Routes = [
     {
         path: 'auth',
-        loadChildren: () => import('@pages/auth/auth.module').then(m => m.LoginPageModule),
+        loadChildren: () =>
+            import('@pages/auth/auth.module').then((m) => m.LoginPageModule),
         canActivate: [NoAuthGuard],
     },
     {
         path: 'home',
-        loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
+        loadChildren: () =>
+            import('./pages/home/home.module').then((m) => m.HomePageModule),
         canActivate: [AuthGuard],
     },
     {
@@ -24,9 +26,8 @@ const routes: Routes = [
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
     ],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

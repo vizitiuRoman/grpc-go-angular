@@ -17,11 +17,17 @@ export class AuthPage {
     constructor(
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        private toastCtrl: ToastController,
+        private toastCtrl: ToastController
     ) {
         this.form = this.formBuilder.group({
-            email: ['roma@mail.ru', [Validators.minLength(4), Validators.required]],
-            password: ['qweqweqwe', [Validators.minLength(8), Validators.required]],
+            email: [
+                'roma@mail.ru',
+                [Validators.minLength(4), Validators.required],
+            ],
+            password: [
+                'qweqweqwe',
+                [Validators.minLength(8), Validators.required],
+            ],
         });
     }
 
@@ -31,9 +37,10 @@ export class AuthPage {
                 email: this.form.controls.email.value,
                 password: this.form.controls.password.value,
             };
-            const submit = type === 'login'
-                ? this.authService.auth(payload)
-                : this.authService.register(payload);
+            const submit =
+                type === 'login'
+                    ? this.authService.auth(payload)
+                    : this.authService.register(payload);
 
             submit.subscribe(
                 () => {
@@ -41,15 +48,15 @@ export class AuthPage {
                 },
                 (err) => {
                     this.form.reset();
-                    this.toastCtrl.create({
-                        message: err.message,
-                        position: 'bottom',
-                        duration: 3000,
-                    })
+                    this.toastCtrl
+                        .create({
+                            message: err.message,
+                            position: 'bottom',
+                            duration: 3000,
+                        })
                         .then((toast) => toast.present());
                 }
             );
-
         }
     }
 

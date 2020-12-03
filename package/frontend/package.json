@@ -8,10 +8,20 @@
         "start": "ng serve",
         "dev": "ng serve --hmr -o",
         "build": "ng build",
+        "build:prod": "ng build --prod --aot --build-optimizer",
+        "isready": "npm run prettier && npm run lint && npm run ts-coverage",
+        "prettier": "prettier --write src/**/*.{js,ts,css}",
+        "ts-coverage": "typescript-coverage-report",
+        "lint": "tslint -p tsconfig.json",
         "test": "ng test",
-        "lint": "ng lint",
+        "analyze": "ng build --prod --aot --build-optimizer --stats-json && webpack-bundle-analyzer www/stats.json",
         "compile": "protoc -I ../../ --js_out=import_style=commonjs:src/app/grpc --grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:src/app/grpc ../../grpc-proto/**/*.proto",
         "e2e": "ng e2e"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run isready"
+        }
     },
     "private": true,
     "dependencies": {
@@ -45,6 +55,7 @@
         "@types/node": "^14.14.9",
         "codelyzer": "^6.0.1",
         "google-protobuf": "^3.14.0",
+        "husky": "^4.3.0",
         "jasmine-core": "~3.6.0",
         "jasmine-spec-reporter": "~6.0.0",
         "karma": "~5.2.3",
@@ -52,11 +63,16 @@
         "karma-coverage-istanbul-reporter": "~3.0.3",
         "karma-jasmine": "~4.0.1",
         "karma-jasmine-html-reporter": "^1.5.4",
+        "prettier": "^2.2.1",
         "protoc-gen-grpc-web": "^1.2.0",
         "protractor": "~7.0.0",
         "ts-node": "~9.0.0",
         "tslint": "~6.1.0",
-        "typescript": "~4.0.2"
+        "tslint-config-prettier": "^1.18.0",
+        "tslint-plugin-prettier": "^2.3.0",
+        "typescript": "~4.0.2",
+        "typescript-coverage-report": "^0.3.1",
+        "webpack-bundle-analyzer": "^4.2.0"
     },
     "description": "An Ionic project"
 }
