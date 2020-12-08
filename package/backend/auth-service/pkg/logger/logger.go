@@ -1,13 +1,14 @@
-package config
+package logger
 
 import (
+	config2 "github.com/auth-service/pkg/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 func NewLogger() *zap.SugaredLogger {
 	var config zap.Config
-	if GetEnvironment() == "prod" {
+	if config2.GetEnvironment() == "prod" {
 		config = zap.NewProductionConfig()
 	} else {
 		config = zap.NewDevelopmentConfig()
