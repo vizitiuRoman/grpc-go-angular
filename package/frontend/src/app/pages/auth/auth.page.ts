@@ -37,17 +37,16 @@ export class AuthPage {
                 email: this.form.controls.email.value,
                 password: this.form.controls.password.value,
             };
+            console.log(type);
             const submit =
                 type === 'login'
                     ? this.authService.auth(payload)
                     : this.authService.register(payload);
 
             submit.subscribe(
-                () => {
-                    this.form.reset();
-                },
+                () => {},
                 (err) => {
-                    this.form.reset();
+                    console.log(err);
                     this.toastCtrl
                         .create({
                             message: err.message,

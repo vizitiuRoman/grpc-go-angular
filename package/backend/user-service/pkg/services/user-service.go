@@ -24,7 +24,7 @@ func hashPassword(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
-func VerifyPassword(hashedPassword, password string) error {
+func verifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
@@ -49,32 +49,32 @@ func (svc *UserWebService) GetUser(userID uint64) (*User, error) {
 	return user, nil
 }
 
-func (svc *UserWebService) UpdateUser(user *User) error {
+func (svc *UserWebService) UpdateUser(user *User) (*User, error) {
 	foundUser, err := svc.store.User.GetUser(user.ID)
 	if err != nil {
-		return errors.Wrap(err, "svc.user.GetUser error")
+		return &User{}, errors.Wrap(err, "svc.user.GetUser error")
 	}
 	if foundUser == nil {
-		return errors.New(fmt.Sprintf("User '%d' not found", user.ID))
+		return &User{}, errors.New(fmt.Sprintf("User '%d' not found", user.ID))
 	}
 
-	err = VerifyPassword(foundUser.Password, user.Password)
+	err = verifyPassword(foundUser.Password, user.Password)
 	if err != nil {
-		return errors.Wrap(err, "Incorrect password")
+		return &User{}, errors.Wrap(err, "Incorrect password")
 	}
 
 	password, err := hashPassword(user.Password)
 	if err != nil {
-		return errors.New("svc.user.UpdateUser hashPassword error")
+		return &User{}, errors.New("svc.user.UpdateUser hashPassword error")
 	}
 
 	user.Password = string(password)
-	err = svc.store.User.UpdateUser(user)
+	updatedUser, err := svc.store.User.UpdateUser(user)
 	if err != nil {
-		return errors.Wrap(err, "svc.user.UpdateUser error")
+		return &User{}, errors.Wrap(err, "svc.user.UpdateUser error")
 	}
 
-	return nil
+	return updatedUser, nil
 }
 
 func (svc *UserWebService) DeleteUser(userID uint64) error {
@@ -98,4 +98,18 @@ func (svc *UserWebService) GetUserByEmail(email string) (*User, error) {
 		return &User{}, errors.Wrap(err, "svc.user.GetUserByEmail error")
 	}
 	return user, nil
+}
+
+func (svc *UserWebService) VerifyUser(email string, password string) (*User, error) {
+	foundUser, err := svc.store.User.GetUserByEmail(email)
+	if err != nil {
+		return &User{}, errors.Wrap(err, "svc.user.GetUserByEmail error")
+	}
+
+	err = verifyPassword(foundUser.Password, password)
+	if err != nil {
+		return &User{}, errors.Wrap(err, "verify user error")
+	}
+
+	return foundUser, nil
 }

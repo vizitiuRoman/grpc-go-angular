@@ -14,9 +14,9 @@ func NewUserRepo(db *DB) *UserRepo {
 
 func (repo *UserRepo) CreateUser(user *User) (*User, error) {
 	rows, err := repo.db.NamedQuery(`
-		INSERT INTO users (email, password)
-		VALUES (:email, :password)
-		RETURNING email, id;
+			INSERT INTO users (email, password)
+			VALUES (:email, :password)
+			RETURNING email, id;
 		`,
 		&user,
 	)
@@ -38,17 +38,21 @@ func (repo *UserRepo) GetUser(userID uint64) (*User, error) {
 	return user, nil
 }
 
-func (repo *UserRepo) UpdateUser(user *User) error {
-	_, err := repo.db.Query(`
-		UPDATE users 
-		SET email=$2, password=$3 
-		WHERE id = $1`,
+func (repo *UserRepo) UpdateUser(user *User) (*User, error) {
+	rows, err := repo.db.Query(`
+			UPDATE users 
+			SET email=$2, password=$3 
+			WHERE id = $1
+		`,
 		user.ID, user.Email, user.Password,
 	)
 	if err != nil {
-		return err
+		return &User{}, err
 	}
-	return nil
+	if rows.Next() {
+		rows.Scan(&user)
+	}
+	return user, nil
 }
 
 func (repo *UserRepo) DeleteUser(userID uint64) error {
