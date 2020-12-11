@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	Port, Secret, RedisPort, RedisHost, UserAddr string
+	Port, Secret, RedisPort, RedisHost, UserSvcAddr string
 }
 
 var config Config
