@@ -10,31 +10,28 @@ import (
 	pb "github.com/user-service/grpc-proto/user"
 	"github.com/user-service/pkg/config"
 	"github.com/user-service/pkg/controller"
-	"github.com/user-service/pkg/models"
+	"github.com/user-service/pkg/logger"
+	"github.com/user-service/pkg/services"
+	"github.com/user-service/pkg/store"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
 type Server struct {
-	logger    *zap.SugaredLogger
-	port      string
-	interrupt chan os.Signal
-	listen    chan error
+	logger         *zap.SugaredLogger
+	serviceManager *services.Manager
+	port           string
+	interrupt      chan os.Signal
+	listen         chan error
 }
 
-func NewServer() *Server {
+func NewServer(store *store.Store) *Server {
 	return &Server{
-		port:      config.Get().Port,
-		logger:    config.NewLogger(),
-		interrupt: make(chan os.Signal, 1),
-		listen:    make(chan error, 1),
-	}
-}
-
-func (srv *Server) Init() {
-	err := models.InitDatabase()
-	if err != nil {
-		srv.logger.Fatalf("Error on init db: %v", err)
+		port:           config.Get().Port,
+		logger:         logger.NewLogger(),
+		serviceManager: services.NewManager(store),
+		interrupt:      make(chan os.Signal, 1),
+		listen:         make(chan error, 1),
 	}
 }
 
@@ -47,7 +44,9 @@ func (srv *Server) StartGRPC() {
 	}
 
 	gRPCServer := grpc.NewServer()
-	pb.RegisterUserServiceServer(gRPCServer, controller.NewController(srv.logger))
+	pb.RegisterUserServiceServer(
+		gRPCServer, controller.NewUserController(srv.serviceManager, srv.logger),
+	)
 
 	go func(listen chan error) {
 		srv.logger.Info("Service started on port: " + srv.port)

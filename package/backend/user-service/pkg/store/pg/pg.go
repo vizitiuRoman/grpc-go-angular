@@ -1,4 +1,4 @@
-package models
+package pg
 
 import (
 	"fmt"
@@ -7,6 +7,10 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/user-service/pkg/config"
 )
+
+type DB struct {
+	*sqlx.DB
+}
 
 const schema = `
 		create table if not exists users (
@@ -18,11 +22,7 @@ const schema = `
 		);
 	`
 
-var (
-	db *sqlx.DB
-)
-
-func InitDatabase() error {
+func Dial() (*DB, error) {
 	DBSpec := fmt.Sprintf(
 		"user=%s dbname=%s password=%s port=%s host=%s sslmode=disable",
 		config.Get().DBUser, config.Get().DBName,
@@ -31,9 +31,8 @@ func InitDatabase() error {
 	)
 	database, err := sqlx.Connect(config.Get().DBDriver, DBSpec)
 	if err != nil {
-		return err
+		return &DB{}, err
 	}
-	db = database
-	db.MustExec(schema)
-	return nil
+	database.MustExec(schema)
+	return &DB{database}, nil
 }

@@ -16,19 +16,19 @@ import (
 )
 
 type Controller struct {
-	userAddr string
-	logger   *zap.SugaredLogger
+	userSvcAddr string
+	logger      *zap.SugaredLogger
 }
 
-func NewController(userAddr string, logger *zap.SugaredLogger) *Controller {
-	return &Controller{userAddr, logger}
+func NewController(userSvcAddr string, logger *zap.SugaredLogger) *Controller {
+	return &Controller{userSvcAddr, logger}
 }
 
-func (c *Controller) Auth(ctx context.Context, req *pb.AuthReq) (*pb.AuthRes, error) {
+func (ctr *Controller) Auth(ctx context.Context, req *pb.AuthReq) (*pb.AuthRes, error) {
 	var conn *grpc.ClientConn
-	conn, err := grpc.Dial(c.userAddr, grpc.WithInsecure())
+	conn, err := grpc.Dial(ctr.userSvcAddr, grpc.WithInsecure())
 	if err != nil {
-		c.logger.Errorf("Auth error dial connection: %v", err)
+		ctr.logger.Errorf("[ctr.Auth] error dial connection: %v", err)
 	}
 	defer conn.Close()
 
@@ -38,13 +38,13 @@ func (c *Controller) Auth(ctx context.Context, req *pb.AuthReq) (*pb.AuthRes, er
 
 	response, err := client.VerifyUser(ctx, userReq)
 	if err != nil {
-		c.logger.Errorf("Auth error verify user: %v", err)
+		ctr.logger.Errorf("[ctr.Auth] error verify user: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	token, err := auth.CreateToken(ctx, response.Id)
 	if err != nil {
-		c.logger.Errorf("Auth error create token: %v", err)
+		ctr.logger.Errorf("[ctr.Auth] error create token: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
@@ -54,11 +54,11 @@ func (c *Controller) Auth(ctx context.Context, req *pb.AuthReq) (*pb.AuthRes, er
 	}, nil
 }
 
-func (c *Controller) Register(ctx context.Context, req *pb.RegisterReq) (*pb.AuthRes, error) {
+func (ctr *Controller) Register(ctx context.Context, req *pb.RegisterReq) (*pb.AuthRes, error) {
 	var conn *grpc.ClientConn
-	conn, err := grpc.Dial(c.userAddr, grpc.WithInsecure())
+	conn, err := grpc.Dial(ctr.userSvcAddr, grpc.WithInsecure())
 	if err != nil {
-		c.logger.Errorf("Register error dial connection: %v", err)
+		ctr.logger.Errorf("Register error dial connection: %v", err)
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 	defer conn.Close()
@@ -69,13 +69,13 @@ func (c *Controller) Register(ctx context.Context, req *pb.RegisterReq) (*pb.Aut
 
 	response, err := client.CreateUser(ctx, userReq)
 	if err != nil {
-		c.logger.Errorf("Register error create user: %v", err)
+		ctr.logger.Errorf("Register error create user: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	token, err := auth.CreateToken(ctx, response.Id)
 	if err != nil {
-		c.logger.Errorf("Register error create token: %v", err)
+		ctr.logger.Errorf("Register error create token: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
@@ -85,16 +85,16 @@ func (c *Controller) Register(ctx context.Context, req *pb.RegisterReq) (*pb.Aut
 	}, nil
 }
 
-func (c *Controller) UpdateAuth(ctx context.Context, req *pb.UpdateAuthReq) (*pb.UpdateAuthRes, error) {
+func (ctr *Controller) UpdateAuth(ctx context.Context, req *pb.UpdateAuthReq) (*pb.UpdateAuthRes, error) {
 	token, err := extractMetadata(ctx, "authorization")
 	if err != nil {
-		c.logger.Errorf("UpdateAuth error extract metadata: %v", err)
+		ctr.logger.Errorf("UpdateAuth error extract metadata: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	extractedAToken, err := auth.ExtractAtMetadata(token)
 	if err != nil {
-		c.logger.Errorf("Error extract access token metadata: %v", err)
+		ctr.logger.Errorf("Error extract access token metadata: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
@@ -102,25 +102,25 @@ func (c *Controller) UpdateAuth(ctx context.Context, req *pb.UpdateAuthReq) (*pb
 
 	extractedRToken, err := auth.ExtractRtMetadata(req.RefreshToken)
 	if err != nil {
-		c.logger.Errorf("UpdateAuth error extract refresh token metadata: %v", err)
+		ctr.logger.Errorf("UpdateAuth error extract refresh token metadata: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	if extractedRToken.RtUUID != rtUUID {
-		c.logger.Error("UpdateAuth error extract refresh token not equal rt uuid")
+		ctr.logger.Error("UpdateAuth error extract refresh token not equal rt uuid")
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid argument")
 	}
 
 	var td TokenDetails
 	err = td.DeleteByUUID(ctx, extractedAToken.AtUUID, rtUUID)
 	if err != nil {
-		c.logger.Errorf("UpdateAuth error delete token by uuid: %v", err)
+		ctr.logger.Errorf("UpdateAuth error delete token by uuid: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	createdToken, err := auth.CreateToken(ctx, extractedAToken.UserID)
 	if err != nil {
-		c.logger.Errorf("UpdateAuth error create token: %v", err)
+		ctr.logger.Errorf("UpdateAuth error create token: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
@@ -130,16 +130,16 @@ func (c *Controller) UpdateAuth(ctx context.Context, req *pb.UpdateAuthReq) (*pb
 	}, nil
 }
 
-func (c *Controller) Logout(ctx context.Context, req *pb.Stub) (*pb.Stub, error) {
+func (ctr *Controller) Logout(ctx context.Context, req *pb.Stub) (*pb.Stub, error) {
 	token, err := extractMetadata(ctx, "authorization")
 	if err != nil {
-		c.logger.Errorf("Logout error extract metadata: %v", err)
+		ctr.logger.Errorf("Logout error extract metadata: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	extractedAToken, err := auth.ExtractAtMetadata(token)
 	if err != nil {
-		c.logger.Errorf("Logout error extract access token metadata: %v", err)
+		ctr.logger.Errorf("Logout error extract access token metadata: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
@@ -148,7 +148,7 @@ func (c *Controller) Logout(ctx context.Context, req *pb.Stub) (*pb.Stub, error)
 	var td TokenDetails
 	err = td.DeleteByUUID(ctx, extractedAToken.AtUUID, rtUUID)
 	if err != nil {
-		c.logger.Errorf("Logout error delete token by uuid: %v", err)
+		ctr.logger.Errorf("Logout error delete token by uuid: %v", err)
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 	return &pb.Stub{}, nil

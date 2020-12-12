@@ -10,6 +10,7 @@ import (
 	pb "github.com/auth-service/grpc-proto/auth"
 	"github.com/auth-service/pkg/config"
 	"github.com/auth-service/pkg/controller"
+	"github.com/auth-service/pkg/logger"
 	"github.com/auth-service/pkg/models"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -25,7 +26,7 @@ type Server struct {
 func NewServer() *Server {
 	return &Server{
 		port:      config.Get().Port,
-		logger:    config.NewLogger(),
+		logger:    logger.NewLogger(),
 		interrupt: make(chan os.Signal, 1),
 		listen:    make(chan error, 1),
 	}
@@ -47,7 +48,7 @@ func (srv *Server) StartGRPC() {
 	}
 
 	gRPCServer := grpc.NewServer()
-	pb.RegisterAuthServiceServer(gRPCServer, controller.NewController(config.Get().UserAddr, srv.logger))
+	pb.RegisterAuthServiceServer(gRPCServer, controller.NewController(config.Get().UserSvcAddr, srv.logger))
 
 	go func(listen chan error) {
 		srv.logger.Info("Service started on port: " + srv.port)
