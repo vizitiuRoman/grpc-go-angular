@@ -13,7 +13,6 @@ type UserWebService struct {
 	store *store.Store
 }
 
-// NewUserWebService creates a new user web service
 func NewUserWebService(store *store.Store) *UserWebService {
 	return &UserWebService{
 		store: store,
