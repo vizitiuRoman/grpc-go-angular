@@ -8,7 +8,7 @@ const routes: Routes = [
     {
         path: 'auth',
         loadChildren: () =>
-            import('@pages/auth/auth.module').then((m) => m.LoginPageModule),
+            import('@pages/auth/auth.module').then((m) => m.AuthPageModule),
         canActivate: [NoAuthGuard],
     },
     {
