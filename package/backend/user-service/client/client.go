@@ -10,8 +10,8 @@ import (
 )
 
 func main() {
-	settings.Init()
-	port := settings.Get().Port
+	config.Init()
+	port := config.Get().Port
 
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial("localhost:"+port, grpc.WithInsecure())
