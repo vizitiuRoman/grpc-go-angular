@@ -18,14 +18,12 @@ import (
 
 type Server struct {
 	logger    *zap.SugaredLogger
-	port      string
 	interrupt chan os.Signal
 	listen    chan error
 }
 
 func NewServer() *Server {
 	return &Server{
-		port:      config.Get().Port,
 		logger:    logger.NewLogger(),
 		interrupt: make(chan os.Signal, 1),
 		listen:    make(chan error, 1),
@@ -42,7 +40,8 @@ func (srv *Server) Init() {
 func (srv *Server) StartGRPC() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	listener, err := net.Listen("tcp", ":"+srv.port)
+	port := config.Get().Port
+	listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		srv.logger.Fatalf("Listen error: %v", err)
 	}
@@ -51,7 +50,7 @@ func (srv *Server) StartGRPC() {
 	pb.RegisterAuthServiceServer(gRPCServer, controller.NewController(config.Get().UserSvcAddr, srv.logger))
 
 	go func(listen chan error) {
-		srv.logger.Info("Service started on port: " + srv.port)
+		srv.logger.Info("Service started on port: " + port)
 		listen <- gRPCServer.Serve(listener)
 	}(srv.listen)
 
