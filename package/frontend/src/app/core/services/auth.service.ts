@@ -25,7 +25,8 @@ export class AuthService {
         private authGrpcService: AuthGrpcService,
         private router: Router,
         private storageService: StorageService
-    ) {}
+    ) {
+    }
 
     private setAuthData(res: UpdateAuthRes.AsObject): void {
         this.storageService.set(ACCESS_TOKEN, res.token);
@@ -55,6 +56,14 @@ export class AuthService {
                 this.storageService.set(ACCESS_TOKEN, res.token);
                 this.storageService.set(REFRESH_TOKEN, res.refreshtoken);
             });
+    }
+
+    private purgeAuth(): void {
+        this.storageService.remove(ACCESS_TOKEN);
+        this.storageService.remove(REFRESH_TOKEN);
+        this.loggedInSubject$.next(false);
+        this.ngOnDestroy$.next();
+        this.router.navigateByUrl('auth');
     }
 
     public isLoggedIn(): Observable<boolean> {
@@ -99,12 +108,11 @@ export class AuthService {
 
     public logout(): void {
         if (this.storageService.get<string>(ACCESS_TOKEN)) {
-            this.authGrpcService.logout().subscribe();
+            this.authGrpcService
+                .logout()
+                .pipe(takeUntil(this.ngOnDestroy$))
+                .subscribe();
         }
-        this.storageService.remove(ACCESS_TOKEN);
-        this.storageService.remove(REFRESH_TOKEN);
-        this.loggedInSubject$.next(false);
-        this.ngOnDestroy$.next();
-        this.router.navigateByUrl('/auth');
+        this.purgeAuth();
     }
 }
