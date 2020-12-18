@@ -25,8 +25,7 @@ export class AuthService {
         private authGrpcService: AuthGrpcService,
         private router: Router,
         private storageService: StorageService
-    ) {
-    }
+    ) {}
 
     private setAuthData(res: UpdateAuthRes.AsObject): void {
         this.storageService.set(ACCESS_TOKEN, res.token);
