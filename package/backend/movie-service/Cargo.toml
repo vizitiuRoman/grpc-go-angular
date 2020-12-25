@@ -1,0 +1,16 @@
+[package]
+name = "movie-service"
+version = "0.1.0"
+authors = ["vizitiuRoman <romanv@readcast.net>"]
+edition = "2018"
+
+[dependencies]
+protobuf = "2.18.1"
+grpc = "0.8.2"
+grpc-protobuf = "0.8.2"
+sqlx = { version = "0.4.1", features = ["postgres", "runtime-async-std-native-tls"] }
+async-std = { version = "1.6", features = ["attributes"] }
+dotenv = "0.15.0"
+
+[build-dependencies]
+protoc-rust-grpc = "0.8.2"
