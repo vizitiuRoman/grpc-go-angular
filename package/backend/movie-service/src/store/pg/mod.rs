@@ -1,2 +1,2 @@
 pub mod pool;
-pub mod user_repo;
+pub mod movie_repo;
