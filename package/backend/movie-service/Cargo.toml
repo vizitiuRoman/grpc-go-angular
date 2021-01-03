@@ -4,10 +4,6 @@ version = "0.1.0"
 authors = ["vizitiuRoman <romanv@readcast.net>"]
 edition = "2018"
 
-[lib]
-name = "grpc_proto"
-path = "src/grpc_proto/mod.rs"
-
 [[bin]]
 name = "client"
 path = "client/client.rs"
