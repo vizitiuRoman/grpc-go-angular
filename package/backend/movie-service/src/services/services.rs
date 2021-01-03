@@ -1,5 +1,6 @@
 use crate::models::movie::Movie;
 
-pub trait MovieRepository {
+pub trait MovieService {
     fn get_movie(&self) -> Movie;
 }
+

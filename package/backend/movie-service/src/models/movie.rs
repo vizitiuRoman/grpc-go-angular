@@ -1,7 +1,3 @@
-// use crate::schema::movies;
-
-// #[derive(Identifiable, Queryable, Insertable)]
-// #[table_name = "movies"]
 pub struct Movie {
     pub adult: bool,
     pub backdrop_path: String,

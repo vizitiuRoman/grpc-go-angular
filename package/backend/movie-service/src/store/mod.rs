@@ -1,3 +1,3 @@
 pub mod repository;
-pub mod pool;
-pub mod movie_repo;
+pub mod store;
+pub mod pg;

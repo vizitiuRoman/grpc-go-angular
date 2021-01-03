@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package movie;
+
+option go_package = "./grpc-proto/movie";
+
+message MovieRes {
+  uint64 id = 1;
+}
+
+message MoviesRes {
+  repeated MovieRes movies = 1;
+}
+
+message MovieStub {}
+
+service MovieService {
+  rpc GetMovies (MovieStub) returns (MoviesRes) {
+  }
+}
