@@ -3,8 +3,13 @@ import { NgModule } from '@angular/core';
 
 import { AuthServicePromiseClient } from '@grpc/grpc-proto/auth/auth_grpc_web_pb';
 import { UserServicePromiseClient } from '@grpc/grpc-proto/user/user_grpc_web_pb';
+import { MovieServicePromiseClient } from '@grpc/grpc-proto/movie/movie_grpc_web_pb';
 
-const GRPC_CLIENTS = [AuthServicePromiseClient, UserServicePromiseClient];
+const GRPC_CLIENTS = [
+    AuthServicePromiseClient,
+    UserServicePromiseClient,
+    MovieServicePromiseClient,
+];
 
 @NgModule({
     imports: [CommonModule],

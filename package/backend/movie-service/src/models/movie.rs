@@ -1,3 +1,6 @@
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct Movie {
     pub adult: bool,
     pub backdrop_path: String,
@@ -13,4 +16,10 @@ pub struct Movie {
     pub video: bool,
     pub vote_average: f64,
     pub vote_count: i64,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct MovieFromAPI {
+    pub page: u8,
+    pub results: Vec<Movie>
 }

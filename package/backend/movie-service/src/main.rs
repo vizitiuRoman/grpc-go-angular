@@ -11,7 +11,7 @@ use crate::grpc_proto::movie_grpc::MovieServiceServer;
 
 #[async_std::main]
 async fn main() {
-    let port = 50051;
+    let port = 9092;
     // creating server
     let mut server = grpc::ServerBuilder::new_plain();
     // adding port to server for http

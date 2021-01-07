@@ -105,6 +105,32 @@
         }
       },
       {
+        "name": "movie",
+        "connect_timeout": "0.25s",
+        "type": "LOGICAL_DNS",
+        "lb_policy": "ROUND_ROBIN",
+        "http2_protocol_options": {},
+        "load_assignment": {
+          "cluster_name": "movie",
+          "endpoints": [
+            {
+              "lb_endpoints": [
+                {
+                  "endpoint": {
+                    "address": {
+                      "socket_address": {
+                        "address": "movie",
+                        "port_value": 9092
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
         "name": "user",
         "connect_timeout": "0.25s",
         "type": "LOGICAL_DNS",

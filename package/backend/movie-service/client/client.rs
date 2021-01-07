@@ -16,7 +16,7 @@ use movie::{MovieStub};
 use futures::executor;
 
 fn main() {
-    let port = 50051;
+    let port = 9092;
     let client_conf = Default::default();
     // create a client
     let client = MovieServiceClient::new_plain("::1", port, client_conf).unwrap();

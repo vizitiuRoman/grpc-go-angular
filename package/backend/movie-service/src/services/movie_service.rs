@@ -1,9 +1,10 @@
 use crate::store::store::Store;
 use crate::services::services::MovieService;
-use crate::models::movie::Movie;
+use crate::models::movie::{MovieFromAPI, Movie};
 use crate::store::repository::MovieRepository;
 
 use easy_http_request::{HttpRequestError, DefaultHttpRequest};
+use serde_json;
 
 pub struct MovieSrv {
     store: Store
@@ -18,15 +19,13 @@ impl MovieSrv {
 }
 
 impl MovieService for MovieSrv {
-    fn fetch_movies(&self) -> Result<(), HttpRequestError> {
-        let response = DefaultHttpRequest::get_from_url_str("https://magiclen.org")
+    fn fetch_movies(&self) -> Result<Vec<Movie>, HttpRequestError> {
+        let response = DefaultHttpRequest::get_from_url_str("https://api.themoviedb.org/3/movie/popular?api_key=8e762f584dc6993fb94182714cbc8c96&language=en-US&page=1")
             .unwrap()
             .send()
             .unwrap();
-
-        println!("{}", response.status_code);
-        println!("{:?}", response.headers);
-        Ok(())
+        let json: MovieFromAPI = serde_json::from_slice(&response.body[..]).unwrap();
+        Ok(json.results)
     }
 
     fn get_movie(&self) -> Movie {
