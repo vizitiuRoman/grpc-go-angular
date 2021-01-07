@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  movie_db:
+    image: postgres
+    container_name: movie_db
+    restart: always
+    environment:
+      POSTGRES_USER: movie
+      POSTGRES_HOST: localhost
+      POSTGRES_PASSWORD: movie
+      POSTGRES_DATABASE: movie
+    ports:
+      - 5445:5445
