@@ -8,15 +8,11 @@ import { MovieGrpcService } from '@grpc/services/movie/movie.service';
     styleUrls: ['./movies.page.scss'],
 })
 export class MoviesPage implements OnInit {
-    constructor(
-        private movieService: MovieGrpcService
-    ) {
-    }
+    constructor(private movieService: MovieGrpcService) {}
 
     ngOnInit(): void {
         this.movieService.getMovies().subscribe();
     }
 
-    public doInfinite($event: Event): void {
-    }
+    public doInfinite($event: Event): void {}
 }
