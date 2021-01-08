@@ -19,7 +19,7 @@ pub struct Movie {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct MovieFromAPI {
+pub struct MoviesFromAPI {
     pub page: u8,
     pub results: Vec<Movie>
 }

@@ -1,22 +1,30 @@
-FROM rust:1.49.0
+# select build image
+FROM rust:1.49 as build
 
-ENV CARGO_TERM_COLOR always
-RUN apt-get update && apt-get install -y libpq-dev cmake
+# create a new empty shell project
+RUN USER=root cargo new --bin movie-service
+WORKDIR /movie-service
 
-# create empty project for caching dependencies
-RUN USER=root cargo new --bin /movie-service/docker-build
-COPY /common-utils/ ./movie-service/common-utils/
-WORKDIR /movie-service/docker-build
-COPY /Cargo.lock ./
-COPY /movie-service/Cargo.toml ./
-# cache dependencies
-RUN cargo install --path . --locked
+# copy over your manifests
+COPY ./Cargo.lock ./Cargo.lock
+COPY ./Cargo.toml ./Cargo.toml
 
-COPY /movie-service/ ./
-RUN cargo install --path . --locked
+# this build step will cache your dependencies
+RUN cargo build --release
+RUN rm src/*.rs
 
-FROM debian:buster-slim
-RUN apt-get update && apt-get install -y libpq-dev curl
-COPY --from=0 /usr/local/cargo/bin/movie-service /usr/local/bin/movie-service
-CMD ["movie-service"]
-EXPOSE 9092
+# copy your source tree
+COPY ./src ./src
+
+# build for release
+RUN rm ./target/release/deps/movie-service*
+RUN cargo build --release
+
+# our final base
+FROM rust:1.49
+
+# copy the build artifact from the build stage
+COPY --from=build /movie-service/target/release/movie-service .
+
+# set the startup command to run your binary
+CMD ["./movie-service"]

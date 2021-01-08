@@ -1,6 +1,6 @@
 use crate::store::store::Store;
 use crate::services::services::MovieService;
-use crate::models::movie::{MovieFromAPI, Movie};
+use crate::models::movie::{MoviesFromAPI, Movie};
 use crate::store::repository::MovieRepository;
 
 use easy_http_request::{HttpRequestError, DefaultHttpRequest};
@@ -24,8 +24,8 @@ impl MovieService for MovieSrv {
             .unwrap()
             .send()
             .unwrap();
-        let json: MovieFromAPI = serde_json::from_slice(&response.body[..]).unwrap();
-        Ok(json.results)
+        let movies_from_api: MoviesFromAPI = serde_json::from_slice(&response.body[..]).unwrap();
+        Ok(movies_from_api.results)
     }
 
     fn get_movie(&self) -> Movie {
