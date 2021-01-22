@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, sqlx::FromRow, Debug)]
 pub struct Movie {
     pub adult: bool,
     pub backdrop_path: String,
