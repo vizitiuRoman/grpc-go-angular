@@ -17,14 +17,14 @@ RUN rm src/*.rs
 COPY ./src ./src
 
 # build for release
-RUN rm ./target/release/deps/movie-service*
+RUN rm ./target/release/deps/*
 RUN cargo build --release
 
 # our final base
 FROM rust:1.49
 
 # copy the build artifact from the build stage
-COPY --from=build /movie-service/target/release/movie-service .
+COPY --from=build /movie-service/target/release/ .
 
 # set the startup command to run your binary
 CMD ["./movie-service"]
