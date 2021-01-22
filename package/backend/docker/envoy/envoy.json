@@ -45,6 +45,15 @@
                               "cluster": "user",
                               "max_grpc_timeout": "0s"
                             }
+                          },
+                          {
+                            "match": {
+                              "prefix": "/movie"
+                            },
+                            "route": {
+                              "cluster": "movie",
+                              "max_grpc_timeout": "0s"
+                            }
                           }
                         ],
                         "cors": {
