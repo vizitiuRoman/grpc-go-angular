@@ -31,7 +31,22 @@ impl MovieService for MovieSrv {
     }
 
     async fn get_movie(&self) -> Movie {
-        self.store.movie_repo.get_t().await;
+        let c = self.store.movie_repo.create_movie(Movie {
+            adult: false,
+            backdrop_path: "fefewf".to_string(),
+            genre_ids: vec![1, 2, 3],
+            id: 10,
+            original_language: "123123123".to_string(),
+            original_title: "123123123".to_string(),
+            overview: "123123123".to_string(),
+            popularity: 11.0,
+            poster_path: "123123123".to_string(),
+            release_date: "123123123".to_string(),
+            title: "123123123".to_string(),
+            video: false,
+            vote_average: 11.0,
+            vote_count: 11,
+        }).await.unwrap();
         println!("Good");
         self.store.movie_repo.get_movie()
     }
