@@ -2,7 +2,8 @@ use crate::store::repository::MovieRepository;
 use crate::models::movie::Movie;
 use crate::store::pg::pool::PoolConnection;
 
-use sqlx::{Pool, Postgres};
+use sqlx::{Pool, Postgres, Error, Row};
+use async_trait::async_trait;
 
 pub struct MovieRepo {
     pool: PoolConnection
@@ -16,6 +17,7 @@ impl MovieRepo {
     }
 }
 
+#[async_trait]
 impl MovieRepository for MovieRepo {
     fn get_movie(&self) -> Movie {
         Movie {
@@ -33,5 +35,14 @@ impl MovieRepository for MovieRepo {
             video: false,
             vote_average: 0.0,
             vote_count: 0,        }
+    }
+
+    async fn get_t(&self) {
+        let rows = sqlx::query("SELECT * from users")
+            .fetch_all(&self.pool).await.unwrap();
+        for row  in rows {
+            let username: String = row.get("login"); // username
+            println!("{}", username)
+        }
     }
 }

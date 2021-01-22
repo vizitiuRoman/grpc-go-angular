@@ -23,6 +23,7 @@ dotenv = "0.15.0"
 easy-http-request = "0.2.9"
 serde_json = "1.0.61"
 serde = "1.0.118"
+async-trait = "0.1.42"
 
 [build-dependencies]
 protoc-rust-grpc = "0.8.2"

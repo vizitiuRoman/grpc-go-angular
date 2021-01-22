@@ -4,6 +4,7 @@ use crate::models::movie::{MoviesFromAPI, Movie};
 use crate::store::repository::MovieRepository;
 
 use easy_http_request::{HttpRequestError, DefaultHttpRequest};
+use async_trait::async_trait;
 use serde_json;
 
 pub struct MovieSrv {
@@ -18,6 +19,7 @@ impl MovieSrv {
     }
 }
 
+#[async_trait]
 impl MovieService for MovieSrv {
     fn fetch_movies(&self) -> Result<Vec<Movie>, HttpRequestError> {
         let response = DefaultHttpRequest::get_from_url_str("https://api.themoviedb.org/3/movie/popular?api_key=8e762f584dc6993fb94182714cbc8c96&language=en-US&page=1")
@@ -28,7 +30,9 @@ impl MovieService for MovieSrv {
         Ok(movies_from_api.results)
     }
 
-    fn get_movie(&self) -> Movie {
+    async fn get_movie(&self) -> Movie {
+        self.store.movie_repo.get_t().await;
+        println!("Good");
         self.store.movie_repo.get_movie()
     }
 }
