@@ -27,4 +27,4 @@ FROM rust:1.49
 COPY --from=build /movie-service/target/release/ .
 
 # set the startup command to run your binary
-CMD ["./movie-service"]
+CMD ["./server"]
