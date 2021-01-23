@@ -2,7 +2,7 @@ use crate::store::repository::MovieRepository;
 use crate::models::movie::Movie;
 use crate::store::pg::pool::PoolConnection;
 
-use sqlx::{Pool, Postgres, Error, Row};
+use sqlx::{Pool, Postgres, Row};
 use async_trait::async_trait;
 
 pub struct MovieRepo {
@@ -19,15 +19,14 @@ impl MovieRepo {
 
 #[async_trait]
 impl MovieRepository for MovieRepo {
-    async fn create_movie(&self, create_movie: Movie) -> Result<(), Error> {
-        let movies = sqlx::query(r#"
+    async fn create_movie(&self, create_movie: Movie) -> Result<Movie, sqlx::Error> {
+        sqlx::query_as(r#"
                 INSERT INTO movies
                 (
                     id,
                     backdrop_path,
                     adult,
                     video,
-                    genre_ids,
                     original_language,
                     original_title,
                     title,
@@ -38,31 +37,32 @@ impl MovieRepository for MovieRepo {
                     vote_average,
                     vote_count
                 )
-                VALUES (1, 'path', true, true, '{1, 2, 3}', 'ru', 'title ru', 'title', 'overview', 'poster path', 'release date', 1.22, 12.44, 11.9)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
                 RETURNING *
-            "#,)
-            .execute(&self.pool)
-            .await?;
-        Ok(())
+            "#
+        )
+            .bind(create_movie.id)
+            .bind(create_movie.backdrop_path)
+            .bind(create_movie.adult)
+            .bind(create_movie.video)
+            .bind(create_movie.original_language)
+            .bind(create_movie.original_title)
+            .bind(create_movie.title)
+            .bind(create_movie.overview)
+            .bind(create_movie.poster_path)
+            .bind(create_movie.release_date)
+            .bind(create_movie.popularity)
+            .bind(create_movie.vote_average)
+            .bind(create_movie.vote_count)
+            .fetch_one(&self.pool)
+            .await
     }
 
-    fn get_movie(&self) -> Movie {
-        Movie {
-            adult: false,
-            backdrop_path: "".to_string(),
-            genre_ids: vec![],
-            id: 0,
-            original_language: "".to_string(),
-            original_title: "".to_string(),
-            overview: "".to_string(),
-            popularity: 0.0,
-            poster_path: "".to_string(),
-            release_date: "".to_string(),
-            title: "".to_string(),
-            video: false,
-            vote_average: 0.0,
-            vote_count: 0,
-        }
+    async fn get_movie(&self, id: i64) -> Result<Movie, sqlx::Error> {
+        sqlx::query_as("SELECT * FROM movies WHERE id = $1")
+            .bind(id)
+            .fetch_one(&self.pool)
+            .await
     }
 
     async fn get_t(&self) {

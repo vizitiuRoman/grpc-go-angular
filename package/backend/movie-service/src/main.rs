@@ -9,6 +9,7 @@ use crate::services::manager::Manager;
 use crate::store::store::Store;
 use crate::grpc_proto::movie_grpc::MovieServiceServer;
 use crate::store::pg::pool::{create_connection_pool};
+use crate::services::services::MovieService;
 
 #[async_std::main]
 async fn main() {
@@ -20,6 +21,9 @@ async fn main() {
     let pool = create_connection_pool().await.unwrap();
     let store = Store::new(pool);
     let manager = Manager::new(store);
+
+    // async_std::task::block_on(manager.movie_service.synchronize_movies());
+
     let controller = Controller::new(manager);
 
     server.add_service(MovieServiceServer::new_service_def(controller));
