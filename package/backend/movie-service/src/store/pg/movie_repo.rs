@@ -2,7 +2,6 @@ use crate::store::repository::MovieRepository;
 use crate::models::movie::Movie;
 use crate::store::pg::pool::PoolConnection;
 
-use sqlx::{Pool, Postgres, Row};
 use async_trait::async_trait;
 
 pub struct MovieRepo {
@@ -65,12 +64,10 @@ impl MovieRepository for MovieRepo {
             .await
     }
 
-    async fn get_t(&self) {
-        let rows = sqlx::query("SELECT * from users")
-            .fetch_all(&self.pool).await.unwrap();
-        for row in rows {
-            let username: String = row.get("login"); // username
-            println!("{}", username)
-        }
+    async fn get_movies(&self) -> Result<Vec<Movie>, sqlx::Error> {
+        sqlx::query_as("SELECT * FROM movies")
+            .fetch_all(&self.pool)
+            .await
     }
+
 }

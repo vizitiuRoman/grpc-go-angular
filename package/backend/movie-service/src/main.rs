@@ -22,7 +22,7 @@ async fn main() {
     let store = Store::new(pool);
     let manager = Manager::new(store);
 
-    // async_std::task::block_on(manager.movie_service.synchronize_movies());
+    async_std::task::block_on(manager.movie_service.synchronize_movies()).ok();
 
     let controller = Controller::new(manager);
 

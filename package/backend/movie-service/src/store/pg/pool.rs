@@ -1,13 +1,13 @@
-use sqlx::{Pool, Error, Postgres, Row, postgres, query};
+use sqlx::{Pool, Postgres, postgres};
 
 pub type PoolConnection = Pool<Postgres>;
 
-pub async fn create_connection_pool() -> Result<PoolConnection, Error> {
+pub async fn create_connection_pool() -> Result<PoolConnection, sqlx::Error> {
     let pool = postgres::PgPoolOptions::new()
         .max_connections(5)
         .connect("postgres://movie:movie@localhost:5432/movie").await?;
 
-    query("CREATE TABLE IF NOT EXISTS movies
+    sqlx::query("CREATE TABLE IF NOT EXISTS movies
         (
             id                INT8                          NOT NULL,
             backdrop_path     TEXT                          NOT NULL,

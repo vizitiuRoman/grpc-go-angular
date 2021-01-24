@@ -36,10 +36,10 @@ impl MovieService for MovieSrv {
             match serde_json::from_slice(&response.body[..]) {
                 Ok::<MoviesFromAPI, serde_json::Error>(movies_from_api) => {
                     for movie in movies_from_api.results {
-                        self.store.movie_repo.create_movie(movie).await;
+                        self.store.movie_repo.create_movie(movie).await.ok();
                     }
                 }
-                Err(err) => {}
+                Err(_) => {}
             }
             page += page;
         }
@@ -48,5 +48,9 @@ impl MovieService for MovieSrv {
 
     async fn get_movie(&self, id: i64) -> Result<Movie, sqlx::Error> {
        self.store.movie_repo.get_movie(id).await
+    }
+
+    async fn get_movies(&self) -> Result<Vec<Movie>, sqlx::Error> {
+       self.store.movie_repo.get_movies().await
     }
 }
