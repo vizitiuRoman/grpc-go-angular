@@ -5,7 +5,19 @@ package movie;
 option go_package = "./grpc-proto/movie";
 
 message MovieRes {
-  uint64 id = 1;
+  int64  id = 1;
+  bool adult = 2;
+  string backdrop_path = 3;
+  string original_language = 4;
+  string original_title = 5;
+  string overview = 6;
+  string poster_path = 7;
+  string release_date = 8;
+  string title = 9;
+  bool video = 10;
+  double popularity = 11;
+  double vote_average = 12;
+  int64 vote_count = 13;
 }
 
 message MoviesRes {
