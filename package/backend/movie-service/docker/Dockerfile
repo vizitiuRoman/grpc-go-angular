@@ -2,8 +2,8 @@
 FROM rust:1.49 as build
 
 # create a new empty shell project
-RUN USER=root cargo new --bin movie-service
-WORKDIR /movie-service
+RUN USER=root cargo new --bin server
+WORKDIR /server
 
 # copy over your manifests
 COPY ./Cargo.lock ./Cargo.lock
@@ -24,7 +24,7 @@ RUN cargo build --release
 FROM rust:1.49
 
 # copy the build artifact from the build stage
-COPY --from=build /movie-service/target/release/ .
+COPY --from=build /server/target/release/ .
 
 # set the startup command to run your binary
 CMD ["./server"]
