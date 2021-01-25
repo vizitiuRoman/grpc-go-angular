@@ -18,6 +18,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
     },
     {
+        path: 'movies',
+        loadChildren: () =>
+            import('./pages/movies/movies.module').then(
+                (m) => m.MoviesPageModule
+            ),
+        canActivate: [AuthGuard],
+    },
+    {
         path: '**',
         pathMatch: 'full',
         redirectTo: 'auth',

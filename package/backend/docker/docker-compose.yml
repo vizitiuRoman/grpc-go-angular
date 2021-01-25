@@ -32,6 +32,14 @@ services:
       - "9091:9091"
     restart: unless-stopped
 
+  ##### movie
+  movie:
+    image: grpc/movie-service:latest
+    container_name: movie
+    ports:
+      - "9092:9092"
+    restart: unless-stopped
+
   ##### envoy-api
   envoy-api-dev:
     image: envoyproxy/envoy-alpine:v1.12.3

@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  movie-pg:
+    image: postgres
+    # networks:
+    #   - default
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: movie
+      POSTGRES_PASSWORD: movie
+      POSTGRES_DB: movie

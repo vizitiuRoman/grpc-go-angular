@@ -1,0 +1,6 @@
+movie.rs
+movie_grpc.rs
+auth.rs
+auth_grpc.rs
+user.rs
+user_grpc.rs
