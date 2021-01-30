@@ -14,6 +14,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	srv := server.NewServer(s)
-	srv.StartGRPC()
+	srv := server.NewServer(config.Get().Port)
+	srv.StartGRPC(s)
 }
