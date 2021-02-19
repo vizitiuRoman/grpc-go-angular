@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
+	"github.com/user-service/config"
 	pb "github.com/user-service/grpc-proto/user"
-	"github.com/user-service/pkg/config"
 	"google.golang.org/grpc"
 )
 

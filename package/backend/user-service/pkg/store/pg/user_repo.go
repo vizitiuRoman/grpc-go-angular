@@ -1,18 +1,19 @@
 package pg
 
 import (
-	. "github.com/user-service/pkg/models"
+	"github.com/jmoiron/sqlx"
+	. "github.com/user-service/pkg/domain"
 )
 
-type UserRepo struct {
-	db *DB
+type userRepo struct {
+	db *sqlx.DB
 }
 
-func NewUserRepo(db *DB) *UserRepo {
-	return &UserRepo{db: db}
+func NewUserRepo(db *sqlx.DB) *userRepo {
+	return &userRepo{db: db}
 }
 
-func (repo *UserRepo) CreateUser(user *User) (*User, error) {
+func (repo *userRepo) CreateUser(user *User) (*User, error) {
 	rows, err := repo.db.NamedQuery(`
 			INSERT INTO users (email, password)
 			VALUES (:email, :password)
@@ -24,12 +25,15 @@ func (repo *UserRepo) CreateUser(user *User) (*User, error) {
 		return &User{}, err
 	}
 	if rows.Next() {
-		rows.StructScan(&user)
+		err = rows.StructScan(&user)
+		if err != nil {
+			return &User{}, err
+		}
 	}
 	return user, nil
 }
 
-func (repo *UserRepo) GetUser(userID uint64) (*User, error) {
+func (repo *userRepo) GetUser(userID uint64) (*User, error) {
 	user := &User{}
 	err := repo.db.Get(user, "SELECT email, id FROM users WHERE id = $1", userID)
 	if err != nil {
@@ -38,7 +42,7 @@ func (repo *UserRepo) GetUser(userID uint64) (*User, error) {
 	return user, nil
 }
 
-func (repo *UserRepo) UpdateUser(user *User) (*User, error) {
+func (repo *userRepo) UpdateUser(user *User) (*User, error) {
 	rows, err := repo.db.Query(`
 			UPDATE users 
 			SET email=$2, password=$3 
@@ -50,12 +54,15 @@ func (repo *UserRepo) UpdateUser(user *User) (*User, error) {
 		return &User{}, err
 	}
 	if rows.Next() {
-		rows.Scan(&user)
+		err = rows.Scan(&user)
+		if err != nil {
+			return &User{}, err
+		}
 	}
 	return user, nil
 }
 
-func (repo *UserRepo) DeleteUser(userID uint64) error {
+func (repo *userRepo) DeleteUser(userID uint64) error {
 	_, err := repo.db.Query(`DELETE FROM users WHERE id = $1`,
 		userID,
 	)
@@ -65,7 +72,7 @@ func (repo *UserRepo) DeleteUser(userID uint64) error {
 	return nil
 }
 
-func (repo *UserRepo) GetUserByEmail(email string) (*User, error) {
+func (repo *userRepo) GetUserByEmail(email string) (*User, error) {
 	user := &User{}
 	err := repo.db.Get(user, "SELECT email, id, password FROM users WHERE email = $1", email)
 	if err != nil {

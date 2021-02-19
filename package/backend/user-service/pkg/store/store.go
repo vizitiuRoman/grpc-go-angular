@@ -1,12 +1,8 @@
 package store
 
-import (
-	"github.com/user-service/pkg/store/pg"
-)
+import "github.com/user-service/pkg/store/pg"
 
 type Store struct {
-	PG *pg.DB
-
 	User UserRepo
 }
 
@@ -16,7 +12,6 @@ func NewStore() (*Store, error) {
 		return nil, err
 	}
 	return &Store{
-		PG:   pgDB,
 		User: pg.NewUserRepo(pgDB),
 	}, nil
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/user-service/pkg/config"
+	"github.com/user-service/config"
 	"github.com/user-service/pkg/server"
 	"github.com/user-service/pkg/store"
 )

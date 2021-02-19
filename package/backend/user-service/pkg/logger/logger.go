@@ -1,7 +1,7 @@
 package logger
 
 import (
-	config2 "github.com/user-service/pkg/config"
+	config2 "github.com/user-service/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )

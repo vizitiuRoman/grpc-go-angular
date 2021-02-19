@@ -15,17 +15,17 @@ import (
 	"google.golang.org/grpc"
 )
 
-type Server struct {
+type server struct {
 	port string
 }
 
-func NewServer(port string) *Server {
-	return &Server{
+func NewServer(port string) *server {
+	return &server{
 		port: port,
 	}
 }
 
-func (srv *Server) StartGRPC(store *store.Store) {
+func (srv *server) StartGRPC(store *store.Store) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	listenCh := make(chan error, 1)

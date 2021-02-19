@@ -4,17 +4,17 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	. "github.com/user-service/pkg/models"
+	. "github.com/user-service/pkg/domain"
 	"github.com/user-service/pkg/store"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserWebService struct {
+type userWebService struct {
 	store *store.Store
 }
 
-func NewUserWebService(store *store.Store) *UserWebService {
-	return &UserWebService{
+func NewUserWebService(store *store.Store) UserService {
+	return &userWebService{
 		store: store,
 	}
 }
@@ -27,7 +27,7 @@ func verifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-func (svc *UserWebService) CreateUser(user *User) (*User, error) {
+func (svc *userWebService) CreateUser(user *User) (*User, error) {
 	password, err := hashPassword(user.Password)
 	if err != nil {
 		return &User{}, errors.New("svc.user.CreateUser hashPassword error")
@@ -40,7 +40,7 @@ func (svc *UserWebService) CreateUser(user *User) (*User, error) {
 	return createdUser, err
 }
 
-func (svc *UserWebService) GetUser(userID uint64) (*User, error) {
+func (svc *userWebService) GetUser(userID uint64) (*User, error) {
 	user, err := svc.store.User.GetUser(userID)
 	if err != nil {
 		return &User{}, errors.Wrap(err, "svc.user.GetUser error")
@@ -48,7 +48,7 @@ func (svc *UserWebService) GetUser(userID uint64) (*User, error) {
 	return user, nil
 }
 
-func (svc *UserWebService) UpdateUser(user *User) (*User, error) {
+func (svc *userWebService) UpdateUser(user *User) (*User, error) {
 	foundUser, err := svc.store.User.GetUser(user.ID)
 	if err != nil {
 		return &User{}, errors.Wrap(err, "svc.user.GetUser error")
@@ -76,7 +76,7 @@ func (svc *UserWebService) UpdateUser(user *User) (*User, error) {
 	return updatedUser, nil
 }
 
-func (svc *UserWebService) DeleteUser(userID uint64) error {
+func (svc *userWebService) DeleteUser(userID uint64) error {
 	foundUser, err := svc.store.User.GetUser(userID)
 	if err != nil {
 		return errors.Wrap(err, "svc.user.GetUser error")
@@ -91,7 +91,7 @@ func (svc *UserWebService) DeleteUser(userID uint64) error {
 	return nil
 }
 
-func (svc *UserWebService) GetUserByEmail(email string) (*User, error) {
+func (svc *userWebService) GetUserByEmail(email string) (*User, error) {
 	user, err := svc.store.User.GetUserByEmail(email)
 	if err != nil {
 		return &User{}, errors.Wrap(err, "svc.user.GetUserByEmail error")
@@ -99,7 +99,7 @@ func (svc *UserWebService) GetUserByEmail(email string) (*User, error) {
 	return user, nil
 }
 
-func (svc *UserWebService) VerifyUser(email string, password string) (*User, error) {
+func (svc *userWebService) VerifyUser(email string, password string) (*User, error) {
 	foundUser, err := svc.store.User.GetUserByEmail(email)
 	if err != nil {
 		return &User{}, errors.Wrap(err, "svc.user.GetUserByEmail error")

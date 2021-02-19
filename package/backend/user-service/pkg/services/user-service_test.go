@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	. "github.com/user-service/pkg/models"
+	. "github.com/user-service/pkg/domain"
 	"github.com/user-service/pkg/store"
 	"github.com/user-service/pkg/store/mocks"
 )

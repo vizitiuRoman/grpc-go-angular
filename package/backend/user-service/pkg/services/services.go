@@ -1,7 +1,7 @@
 package services
 
 import (
-	. "github.com/user-service/pkg/models"
+	. "github.com/user-service/pkg/domain"
 )
 
 // UserService is a service for users

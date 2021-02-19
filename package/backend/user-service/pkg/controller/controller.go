@@ -4,7 +4,7 @@ import (
 	"context"
 
 	pb "github.com/user-service/grpc-proto/user"
-	. "github.com/user-service/pkg/models"
+	. "github.com/user-service/pkg/domain"
 	"github.com/user-service/pkg/services"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"

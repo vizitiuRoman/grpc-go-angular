@@ -1,7 +1,7 @@
 package store
 
 import (
-	. "github.com/user-service/pkg/models"
+	. "github.com/user-service/pkg/domain"
 )
 
 // UserRepo is a store for users

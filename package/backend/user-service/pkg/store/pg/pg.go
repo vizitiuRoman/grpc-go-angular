@@ -5,12 +5,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/user-service/pkg/config"
+	"github.com/user-service/config"
 )
-
-type DB struct {
-	*sqlx.DB
-}
 
 const schema = `
 		create table if not exists users (
@@ -22,7 +18,7 @@ const schema = `
 		);
 	`
 
-func Dial() (*DB, error) {
+func Dial() (*sqlx.DB, error) {
 	DBSpec := fmt.Sprintf(
 		"user=%s dbname=%s password=%s port=%s host=%s sslmode=disable",
 		config.Get().DBUser, config.Get().DBName,
@@ -31,8 +27,14 @@ func Dial() (*DB, error) {
 	)
 	database, err := sqlx.Connect(config.Get().DBDriver, DBSpec)
 	if err != nil {
-		return &DB{}, err
+		return &sqlx.DB{}, err
 	}
+
+	err = database.Ping()
+	if err != nil {
+		return &sqlx.DB{}, err
+	}
+
 	database.MustExec(schema)
-	return &DB{database}, nil
+	return database, nil
 }
