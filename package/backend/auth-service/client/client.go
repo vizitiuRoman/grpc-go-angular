@@ -3,15 +3,14 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	pb "github.com/auth-service/grpc-proto/auth"
-	"github.com/auth-service/pkg/config"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	config.Init()
-	port := config.Get().Port
+	port := os.Getenv("PORT")
 
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial("localhost"+port, grpc.WithInsecure())

@@ -8,66 +8,69 @@ import (
 	"syscall"
 
 	pb "github.com/auth-service/grpc-proto/auth"
-	"github.com/auth-service/pkg/config"
 	"github.com/auth-service/pkg/controller"
 	"github.com/auth-service/pkg/logger"
 	"github.com/auth-service/pkg/models"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
-type Server struct {
-	logger    *zap.SugaredLogger
-	interrupt chan os.Signal
-	listen    chan error
+type server struct {
+	port string
 }
 
-func NewServer() *Server {
-	return &Server{
-		logger:    logger.NewLogger(),
-		interrupt: make(chan os.Signal, 1),
-		listen:    make(chan error, 1),
+func NewServer(port string) *server {
+	return &server{
+		port: port,
 	}
 }
 
-func (srv *Server) Init() {
+func (srv *server) Init() {
 	err := models.InitRedis()
 	if err != nil {
-		srv.logger.Fatalf("Error on init redis: %v", err)
+		log.Fatalf("Error on init redis: %v", err)
 	}
 }
 
-func (srv *Server) StartGRPC() {
+func (srv *server) StartGRPC() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	port := config.Get().Port
-	listener, err := net.Listen("tcp", ":"+port)
+	listenCh := make(chan error, 1)
+	interruptCh := make(chan os.Signal, 1)
+
+	zapLogger := logger.NewLogger()
+
+
+	listener, err := net.Listen("tcp", ":"+srv.port)
 	if err != nil {
-		srv.logger.Fatalf("Listen error: %v", err)
+		zapLogger.Fatalf("Listen error: %v", err)
 	}
 
 	gRPCServer := grpc.NewServer()
-	pb.RegisterAuthServiceServer(gRPCServer, controller.NewController(config.Get().UserSvcAddr, srv.logger))
+	pb.RegisterAuthServiceServer(
+		gRPCServer,
+		controller.NewController(os.Getenv("USER_SVC_ADDR"), zapLogger),
+	)
 
 	go func(listen chan error) {
-		srv.logger.Info("Service started on port: " + port)
+		zapLogger.Info("Service started on port: " + srv.port)
 		listen <- gRPCServer.Serve(listener)
-	}(srv.listen)
+	}(listenCh)
 
-	signal.Notify(srv.interrupt, syscall.SIGINT, syscall.SIGTERM)
-	srv.waitShutdown(srv.listen, srv.interrupt)
+	signal.Notify(interruptCh, syscall.SIGINT, syscall.SIGTERM)
+	waitShutdown(listenCh, interruptCh)
 }
 
-func (srv Server) waitShutdown(listen chan error, interrupt chan os.Signal) {
+func waitShutdown(listen chan error, interrupt chan os.Signal) {
 	for {
 		select {
 		case err := <-listen:
 			if err != nil {
-				srv.logger.Fatalf("Listener error: %v", err)
+				log.Fatalf("Listener error: %v", err)
 			}
 			os.Exit(0)
 		case err := <-interrupt:
-			srv.logger.Fatalf("Shutdown signal: %v", err.String())
+			log.Fatalf("Shutdown signal: %v", err.String())
 		}
 	}
 }
+

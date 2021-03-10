@@ -4,9 +4,9 @@ go 1.15
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/go-redis/redis/v8 v8.3.3
 	github.com/golang/protobuf v1.4.2
+	github.com/joho/godotenv v1.3.0
 	github.com/myesui/uuid v1.0.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/twinj/uuid v1.0.0

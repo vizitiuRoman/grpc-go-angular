@@ -2,10 +2,10 @@ package pg
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/user-service/config"
 )
 
 const schema = `
@@ -21,11 +21,11 @@ const schema = `
 func Dial() (*sqlx.DB, error) {
 	DBSpec := fmt.Sprintf(
 		"user=%s dbname=%s password=%s port=%s host=%s sslmode=disable",
-		config.Get().DBUser, config.Get().DBName,
-		config.Get().DBPassword, config.Get().DBPort,
-		config.Get().DBHost,
+		os.Getenv("DB_USER"), os.Getenv("DB_NAME"),
+		os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"),
+		os.Getenv("DB_HOST"),
 	)
-	database, err := sqlx.Connect(config.Get().DBDriver, DBSpec)
+	database, err := sqlx.Connect("postgres", DBSpec)
 	if err != nil {
 		return &sqlx.DB{}, err
 	}

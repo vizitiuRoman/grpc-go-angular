@@ -1,13 +1,20 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/auth-service/pkg/server"
-	"github.com/auth-service/pkg/config"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	config.Init()
-	srv := server.NewServer()
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	srv := server.NewServer(os.Getenv("PORT"))
 	srv.Init()
 	srv.StartGRPC()
 }

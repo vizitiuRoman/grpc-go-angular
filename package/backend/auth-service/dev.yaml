@@ -1,7 +1,0 @@
-{
-  "port": "9090",
-  "UserSvcAddr": "user:9091",
-  "secret": "rokgne",
-  "redisHost": "redis-master",
-  "redisPort": "6379"
-}

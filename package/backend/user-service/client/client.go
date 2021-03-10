@@ -3,18 +3,22 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
-	"github.com/user-service/config"
+	"github.com/joho/godotenv"
 	pb "github.com/user-service/grpc-proto/user"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	config.Init()
-	port := config.Get().Port
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	port := os.Getenv("PORT")
 
 	var conn *grpc.ClientConn
-	conn, err := grpc.Dial("localhost:"+port, grpc.WithInsecure())
+	conn, err = grpc.Dial("localhost:"+port, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)
 	}

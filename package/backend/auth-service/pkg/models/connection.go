@@ -2,8 +2,8 @@ package models
 
 import (
 	"context"
+	"os"
 
-	"github.com/auth-service/pkg/config"
 	"github.com/go-redis/redis/v8"
 )
 
@@ -12,7 +12,7 @@ var (
 )
 
 func InitRedis() error {
-	host, port := config.Get().RedisHost, config.Get().RedisPort
+	host, port := os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")
 	rds = redis.NewClient(&redis.Options{
 		Addr: host + ":" + port,
 	})
