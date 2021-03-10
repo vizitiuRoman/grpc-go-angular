@@ -1,6 +1,8 @@
 version: "3.7"
 
 services:
+
+  ##### user database
   user_db:
     image: postgres
     container_name: user_db
@@ -23,6 +25,13 @@ services:
     ports:
       - "9090:9090"
     restart: unless-stopped
+    environment:
+      PORT: 9090
+      USER_SVC_ADDR: user:9091
+      SECRET: rokgne
+      REDIS_HOST: redis-master
+      REDIS_PORT: 6379
+      ENVIRONMENT: dev
 
   ##### user
   user:
@@ -31,14 +40,15 @@ services:
     ports:
       - "9091:9091"
     restart: unless-stopped
-
-  ##### movie
-  movie:
-    image: grpc/movie-service:latest
-    container_name: movie
-    ports:
-      - "9092:9092"
-    restart: unless-stopped
+    environment:
+      PORT: 9091
+      DB_HOST: user_db
+      DB_DEBUG: true
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: user
+      DB_NAME: user
+      ENVIRONMENT: dev
 
   ##### envoy-api
   envoy-api-dev:
