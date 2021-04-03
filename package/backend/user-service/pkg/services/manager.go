@@ -12,6 +12,6 @@ type Manager struct {
 // NewManager creates new service manager
 func NewManager(store *store.Store) *Manager {
 	return &Manager{
-		User: NewUserWebService(store),
+		User: NewUserService(store.User),
 	}
 }

@@ -51,7 +51,7 @@ func TestCreateUser(t *testing.T) {
 		t.Logf("Running: %s", test.name)
 
 		userRepo := &mocks.UserRepo{}
-		svc := NewUserWebService(&store.Store{User: userRepo})
+		svc := NewUserService(&store.Store{User: userRepo})
 		test.expectations(userRepo)
 
 		_, err := svc.CreateUser(test.input)
@@ -109,7 +109,7 @@ func TestGetUser(t *testing.T) {
 		t.Logf("Running: %s", test.name)
 
 		userRepo := &mocks.UserRepo{}
-		svc := NewUserWebService(&store.Store{User: userRepo})
+		svc := NewUserService(&store.Store{User: userRepo})
 		test.expectations(userRepo)
 
 		_, err := svc.GetUser(test.input.ID)

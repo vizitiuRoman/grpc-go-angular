@@ -13,7 +13,7 @@ RUN apk update && apk add --no-cache git
 WORKDIR /app
 
 # Copy go mod and sum files
-COPY ./go.mod go.sum dev.yaml ./
+COPY ./go.mod go.sum ./
 COPY ./cmd/main.go ./
 
 # RUN go mod tidy
@@ -34,7 +34,6 @@ WORKDIR /root/
 
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder /app/main .
-COPY --from=builder /app/dev.yaml .
 
 # Expose port 8080 to the outside world
 EXPOSE 9091
